@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyanidation</title>
+    <link rel="stylesheet" href="./main.css">
+    <script src="./modules/vue.global.js"></script>
+    <script src="./modules/xlsx.full.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <link id="theme-css" rel="stylesheet" :href="themeCSSPath">
+        <div id="guidance" v-if="!isTableAvailable">
+            <div v-show="g.pageCode == 1">
+                <h1>欢迎使用 Cyanidation 2！</h1>
+                <p>轻量级的课程表</p>
+                <span>
+                    <button @click="g.pageCode++">下一步</button>
+                </span>
+            </div>
+            <div v-show="g.pageCode == 2">
+                <h1>选择你的院校，并导入课程表</h1>
+                <select id="university-selector">
+                    <!-- <option value="AHTCM">安徽中医药大学（AHTCM）</option> -->
+                    <option value="HFUU" selected>合肥学院（HFUU）</option>
+                </select>
+                <input type="file" id="excel-selector" @change="g.isTableFileReady = true">
+                <span>
+                    <button @click="g.pageCode--">上一步</button>
+                    <button @click="g.pageCode++" :disabled="!g.isTableFileReady">下一步</button>
+                </span>
+            </div>
+            <div v-show="g.pageCode == 3">
+                <h1>选择你喜爱的主题</h1>
+                <select id="theme-selector" v-model="theme" @change="setTheme()">
+                    <option value="" selected>现代浅色（Modern Light）</option>
+                    <option value="modern-dark">现代深色（Modern Dark）</option>
+                    <option value="classic-amiya">古典阿米娅（Classic Amiya）</option>
+                </select>
+                <span>
+                    <button @click="g.pageCode--, g.isTableFileReady = false">上一步</button>
+                    <button @click="g.pageCode++">下一步</button>
+                </span>
+            </div>
+            <div v-show="g.pageCode == 4">
+                <h1>开始享受吧！</h1>
+                <span>
+                    <button @click="isTableAvailable = true, setData()">开始使用</button>
+                </span>
+            </div>
+        </div>
+        <div id="dashboard" v-else>
+            <iframe :src="themeCPTPath || './component.html'" frameborder="0"></iframe>
+            <button class="f-go" id="f-go-back">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 86.6">
+                    <path @click="goAhead(-1)" d="M0,86.6 L50,0 L100,86.6 Z" />
+                </svg>
+            </button>
+            <button class="f-go" id="f-go-ahead">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 86.6">
+                    <path @click="goAhead(1)" d="M0,0 L50,86.6 L100,0 Z" />
+                </svg>
+            </button>
+            <div id="today"></div>
+            <div id="tomorrow"></div>
+        </div>
+        <button id="f-reset" @click="reset()"></button>
+    </div>
+</body>
+
+<script src="./defination.js"></script>
+<script src="./main.js"></script>
+
+<script>
+    let app = Vue.createApp({
+        data() {
+            return {
+                /**
+                 * 初始化设置中所用的一次性变量。
+                */
+                g: {
+                    pageCode: 1,
+                    university: "",
+                    isTableFileReady: false
+                },
+                isTableAvailable: localStorage.getItem("cy-data") ? true : false,
+                theme: localStorage.getItem("cy-theme") || "",
+                /**
+                 * 测试日期。
+                 * *警告：该选项仅供开发人员调试程序用，用户请勿填写任何值！*
+                 * @type {string}
+                 */
+                testDate: ""
+            }
+        },
+        methods: {
+            setData() {
+                setData(document.querySelector("#university-selector").value,
+                    document.querySelector("#excel-selector").files[0],
+                    true, this.testDate ? new Date(this.testDate) : new Date())
+            },
+            setTheme() {
+                localStorage.setItem("cy-theme", this.theme)
+            },
+            render() {
+                setTimeout(() => {
+                    render(this.testDate ? new Date(this.testDate) : new Date())
+                }, 1)
+            },
+            goAhead(day) {
+                this.testDate =
+                    new Date((this.testDate ? new Date(this.testDate) : new Date()).getTime() + day * 24 * 60 * 60 * 1000)
+                this.render()
+            },
+            reset() {
+                localStorage.removeItem("cy-data")
+                this.g.pageCode = 1
+                this.g.university = ""
+                this.g.isTableFileReady = false
+                this.isTableAvailable = false
+            },
+            playSFX() {
+                if (this.theme)
+                    document.querySelector("theme-sfx").play()
+            }
+        },
+        computed: {
+            themeCSSPath() {
+                if (this.theme)
+                    return `./theme/${this.theme}/main.css`
+                return ``
+            },
+            themeCPTPath() {
+                if (this.theme)
+                    return `./theme/${this.theme}/component.html`
+                return ``
+            }
+        },
+        mounted() {
+            if (this.isTableAvailable)
+                this.render()
+        }
+    }).mount("#app")
+</script>
+
+</html>

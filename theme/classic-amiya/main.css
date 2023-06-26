@@ -1,0 +1,114 @@
+:root {
+    /* 背景色 */
+    --bg-c: #eee;
+    /* 文字色 */
+    --text-c: #333;
+    /* 控件色 */
+    --ctrl-c: rgba(0, 0, 0, 0.55);
+    /* 主题色 */
+    --theme-c: linear-gradient(to bottom, var(--ctrl-c), rgba(0, 0, 0, 0.95));
+    /* 功能文字色 */
+    --fn-text-c: #fff;
+    /* 次主题色 */
+    --sub-theme-c: #da3633;
+}
+
+#guidance {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: url("./assets/g-bg.png");
+    background-size: cover;
+}
+
+#guidance button {
+    background: var(--theme-c);
+    padding: 10px 22px;
+    border: none;
+    border-radius: 0;
+    color: var(--fn-text-c);
+}
+
+@keyframes d-bg-breathing {
+    0% {
+        filter: blur(0.5px);
+    }
+
+    50% {
+        filter: blur(3px);
+    }
+
+    100% {
+        filter: blur(0.5px);
+    }
+}
+
+#dashboard {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+#dashboard::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    background: url("./assets/d-bg.png");
+    background-size: cover;
+    animation: d-bg-breathing 5s infinite;
+}
+
+#dashboard .f-go path:active {
+    fill: var(--bg-c);
+    transition: none;
+}
+
+#dashboard>div {
+    position: absolute;
+    right: 4%;
+    width: 36%;
+    height: calc(41% - 160px);
+    padding-top: 160px;
+    border-top: 1px solid var(--fn-text-c);
+    box-shadow: 1px 1px 4px var(--text-c);
+    background: linear-gradient(to bottom, var(--ctrl-c) 140px, rgba(255, 255, 255, 0.55) 140px);
+    overflow: hidden;
+    user-select: none;
+}
+
+#dashboard>div .date {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 2px 8px;
+    background: var(--fn-text-c);
+    box-shadow: 1px 1px 4px var(--text-c);
+    color: var(--text-c);
+    font-style: normal;
+    font-size: 14px;
+}
+
+#dashboard>div .date.weekend {
+    background: transparent;
+    border: 1px solid var(--fn-text-c);
+    border-top: none;
+    color: var(--fn-text-c);
+}
+
+#dashboard>div .unit-title {
+    position: absolute;
+    top: -50px;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--fn-text-c);
+    font-style: italic;
+    font-weight: bolder;
+    font-size: 144px;
+}
+
+#dashboard>div .cut {
+    color: var(--text-c);
+    margin-left: 15px;
+}
