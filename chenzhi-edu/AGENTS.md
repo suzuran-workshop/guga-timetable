@@ -44,13 +44,14 @@
 - `src/server/index.ts` — 六模块装配入口（createApp 中间件链）
 - `src/server/env.ts` — `@homurajs/core` 配置装载（applyEnvFile + defineConfig）
 - `src/server/db/` — `schema/{pg,sqlite}.ts` 双方言表、`tables.ts` 按方言选表、`index.ts` 建库+迁移
-- `src/server/repo/` — 领域仓储（student/teacher/course/class/schedule/attendance/grade/order/file/profile）+ `base.ts`
-- `src/server/api/` — Hono 路由（`crud.ts` 通用工厂、`guards.ts` 会话/RBAC、各资源路由、`index.ts` 组装）
+- `src/server/repo/` — 领域仓储（student/teacher/course/class/schedule/scheduleException/attendance/grade/order/file/profile/term）+ `base.ts`
+- `src/server/service/` — `dashboard`（聚合）、`autoSchedule`（贪心+回溯自动派课）
+- `src/server/api/` — Hono 路由（`crud.ts` 通用工厂、`guards.ts` 会话/RBAC、各资源路由、`scheduleExceptions.ts` 调换课、`terms.ts` 学期、`index.ts` 组装）
 - `src/server/auth/` `license/` `storage/` — 三能力包的装配层
 - `src/client/App.tsx` — 路由表 + 登录守卫
-- `src/client/pages/` — 13 个业务页
-- `src/client/components/` — `layout/`（壳）、`ui/`（shadcn 生成）、复用件（form-dialog/data-table/stat-card…）
-- `src/client/{store,hooks,lib}/` — zustand 会话/授权、useApi/useOptions、api 客户端+工具
+- `src/client/pages/` — 16 个业务页（含 timetable 三维度课表、schedule-adjust 调换课、auto-schedule 自动派课）
+- `src/client/components/` — `layout/`（壳）、`ui/`（shadcn 生成）、复用件（form-dialog/data-table/stat-card/timetable-grid…）
+- `src/client/{store,hooks,lib}/` — zustand 会话/授权、useApi/useOptions/useTerm、api 客户端+工具
 - `scripts/` — `migrate` `seed` `genkeys` `gen-config` `reset-db`
 - `tools/genuine-mock.ts` — 本地授权中心（Ed25519 签名，实现 license 契约端点）
 - `drizzle/{sqlite,pg}/` — 迁移产物；`homura.config.env.example` — 配置模板

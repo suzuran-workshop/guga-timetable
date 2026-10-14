@@ -43,9 +43,9 @@
 | `@homurajs/auth` | 认证：密码 provider、自管会话(HS256 短 JWT + opaque refresh rotate + 族吊销)、session 中间件、`/auth/*` 路由 |
 | `@homurajs/license` | 授权：LicenseClient(注册/心跳/验签/状态机)、licenseGuard(停服守卫)、requireFeature(功能闸门)、`/_license` 状态端点 |
 | `@homurajs/storage` | 对象存储：FileStorage 契约、local-fs 后端、`/files/<key>` 代理下载路由 |
-| **业务层** | `repo/*`(Drizzle 查询+业务规则) · `api/*`(Hono 路由+RBAC 守卫) · `service/dashboard`(聚合) |
-| **前端** | `pages/*`(13 页) · `components/*`(layout/ui/复用件) · `store`(zustand) · `hooks`(useApi/useOptions) · `lib`(api/utils) |
-| **契约** | `src/shared/domain.ts`：枚举/RBAC 映射/zod schema/DTO/节次定义，前后端同源 |
+| **业务层** | `repo/*`(Drizzle 查询+业务规则，含 term/scheduleException) · `api/*`(Hono 路由+RBAC 守卫) · `service/*`(dashboard 聚合、autoSchedule 贪心+回溯派课) |
+| **前端** | `pages/*`(16 页) · `components/*`(layout/ui/复用件，含 timetable-grid) · `store`(zustand) · `hooks`(useApi/useOptions/useTerm) · `lib`(api/utils) |
+| **契约** | `src/shared/domain.ts`：枚举/RBAC 映射/zod schema/DTO/节次定义/学期日期纯函数/排课例外类型，前后端同源 |
 
 ## 模块关系
 
@@ -78,4 +78,7 @@
 - **schema 漂移即崩**：启动跑 `assertSchemaParity(pgSchema, sqliteSchema)`，表名/列名/主键不一致直接 fail-fast——避免上线后双方言行为分叉。
 - **drizzle 版本钉死**：`drizzle-orm` 与 `drizzle-kit` 必须同为 `1.0.0-rc.4`（auth/license/storage 的 peer 精确锁此版；kit 版本不匹配会拒绝生成迁移）。
 - **金额/时间表示**：金额一律整数「分」，时间一律 epoch ms（`bigint`/`integer`，双方言原生 SQL 读写一致；node:sqlite 不接受 Date 对象）。
-- **授权 fail-open**：注册/心跳网络失败不抛错、不改已确认状态，仅推进宽限期计时（ADR 精神：短暂失联不该误伤正常用户）；但**验签失败一律 suspended**（安全边界不可 fail-open）。
+- **授权 fail-open**：注册/心跳网络失败不抛错、不改已确认状态，仅推进宽限期计时（ADR 精神：短暂失联不该误伤正常用户）；但**验签失败一律 suspended**（安全边界不可 fail-open）。注册失败也不崩——后台每 15s 重试 register，授权中心起来后自动激活（`startRegisterRetry`），无需重启业务服务。
+- **排课两层模型**：循环排课（`schedules`，按周重复：weekday+节次+周段）与例外层（`schedule_exceptions`，针对**具体某一次课**：cancelled/moved/substituted）分离。单日实际课次由 `resolveDay(date)` 叠加解析：循环排课命中该天 − 移出/取消 + 调入（含代课覆盖教师）。调换课只写例外，**不改循环排课本体**——学期内其余周次不受影响。「对调」= 两条互指对方日期的 moved 例外（交换节次、各留教室）。
+- **学期是时间锚点**：`terms.startDate` 经 `startOfWeekMonday` 规整为周一，保证 `weekOfDate`/`dateOfWeekday` 往返一致（非周一锚点会错位一天）。课表周次、调换课日期解析、自动派课周段全部依赖当前学期；无当前学期时课表回退第 1 周并给 UI 提示。日期↔教学周是 `shared/domain.ts` 的**纯函数**，前后端同源、17 项单测锁定。
+- **自动派课 = 贪心 + 回溯**：任务展开（每班 N 次课）→ 候选时段枚举（period-major 排序，使同班课次分散到不同天）→ 回溯搜索（内存虚拟占位参与冲突检测，复用三维相交语义：教室∪教师∪同班 × 节次 × 周段）→ **all-or-nothing 落库**（排不全则一节不落库，全部记失败并给放宽建议）。回溯超上限（默认 20000）提前终止防爆炸。不追求全局最优（那是 CSP/求解器的范畴，见 PRD 非目标）。

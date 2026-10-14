@@ -72,11 +72,12 @@ npm run test:e2e       # Playwright（16 项，真实 Chromium；webServer 自�
 
 ## 当前状态
 
-- **阶段**：功能完整的可运行原型（13 个业务页 + 六模块后端全部接通，E2E 全绿）。
+- **阶段**：功能完整的可运行原型（16 个业务页 + 六模块后端全部接通，32 项单测 + 22 项 E2E 全绿）。
 - **已知限制**：
   - 授权中心为**本地 genuine-mock**（`tools/genuine-mock.ts`），非生产级中央授权服务；生产应对接供应方的 homura-genuine。
   - 对象存储用 **local-fs** 后端（`data/storage`）；切 S3/supabase 只需替换 `src/server/storage/index.ts`。
   - 默认 **sqlite** 单机形态；pg 形态的 schema/迁移已就绪（`drizzle.pg.config.ts`），但未在真实 PG 上跑过集成。
+  - **自动派课是贪心+回溯的可行解，非全局最优**（不含教师时间偏好、连堂硬约束、跨班均衡等 CSP 级约束）；手动排课+冲突校验仍是主路径。
   - 演示用的种子数据与 `AUTH_SECRET` 缺省值仅供开发，生产必须覆盖（`loadConfig` 在 `NODE_ENV=production` 下会拒绝 dev 缺省密钥）。
 
 ## 核心技术
