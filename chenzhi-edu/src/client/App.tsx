@@ -78,7 +78,7 @@ export function App() {
           <Route path="/attendance" element={<AttendancePage />} />
           <Route path="/grades" element={<GradesPage />} />
           <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/files" element={<FilesPage />} />
+          <Route path="/library" element={<FilesPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

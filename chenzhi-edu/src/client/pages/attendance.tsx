@@ -137,18 +137,18 @@ export function AttendancePage() {
       <Card className="mb-4">
         <CardContent className="grid gap-3 p-4 sm:grid-cols-3">
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground">班级</label>
+            <label htmlFor="att-class" className="text-xs font-medium text-muted-foreground">班级</label>
             <Select value={classId} onValueChange={(v) => { setClassId(v); setScheduleId('') }}>
-              <SelectTrigger><SelectValue placeholder="选择班级" /></SelectTrigger>
+              <SelectTrigger id="att-class"><SelectValue placeholder="选择班级" /></SelectTrigger>
               <SelectContent>
                 {classes.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground">排课节次</label>
+            <label htmlFor="att-schedule" className="text-xs font-medium text-muted-foreground">排课节次</label>
             <Select value={scheduleId} onValueChange={setScheduleId} disabled={!classScheds?.items.length}>
-              <SelectTrigger><SelectValue placeholder="选择节次" /></SelectTrigger>
+              <SelectTrigger id="att-schedule"><SelectValue placeholder="选择节次" /></SelectTrigger>
               <SelectContent>
                 {(classScheds?.items ?? []).map((s) => (
                   <SelectItem key={s.id} value={s.id}>
@@ -159,8 +159,8 @@ export function AttendancePage() {
             </Select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground">上课日期</label>
-            <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            <label htmlFor="att-date" className="text-xs font-medium text-muted-foreground">上课日期</label>
+            <Input id="att-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
         </CardContent>
       </Card>

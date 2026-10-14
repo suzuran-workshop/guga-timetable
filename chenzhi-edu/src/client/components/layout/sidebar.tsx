@@ -27,7 +27,7 @@ const NAV: NavItem[] = [
   { to: '/teachers', label: '教师管理', icon: GraduationCap, perm: 'teacher:read', group: '人员' },
   { to: '/grades', label: '成绩管理', icon: Award, perm: 'grade:read', group: '教务' },
   { to: '/orders', label: '收费订单', icon: Receipt, perm: 'order:read', group: '教务' },
-  { to: '/files', label: '资料库', icon: FolderOpen, perm: 'file:read', group: '系统' },
+  { to: '/library', label: '资料库', icon: FolderOpen, perm: 'file:read', group: '系统' },
   { to: '/settings', label: '系统设置', icon: Settings, perm: 'setting:write', group: '系统' },
 ]
 

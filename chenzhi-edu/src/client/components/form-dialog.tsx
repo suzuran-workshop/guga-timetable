@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { z } from 'zod'
@@ -71,6 +71,7 @@ export function FormDialog<T extends Record<string, any>>(props: FormDialogProps
     endpoint, editId, onSaved, transform, width = 'max-w-2xl',
   } = props
   const isEdit = !!editId
+  const formId = useId().replace(/[:]/g, '')
   const [submitting, setSubmitting] = useState(false)
 
   const { control, handleSubmit, reset, formState: { errors } } = useForm<any>({
@@ -117,13 +118,16 @@ export function FormDialog<T extends Record<string, any>>(props: FormDialogProps
         </DialogHeader>
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
-            {fields.map((f) => (
-              <div key={f.name} className={f.colSpan === 2 ? 'sm:col-span-2' : ''}>
-                <Field label={f.label} error={(errors as any)[f.name]?.message} required={f.required} hint={f.hint}>
-                  <ControlledField name={f.name} spec={f} control={control} disabled={isEdit && f.readOnly} />
-                </Field>
-              </div>
-            ))}
+            {fields.map((f) => {
+              const fieldId = `${formId}-${f.name}`
+              return (
+                <div key={f.name} className={f.colSpan === 2 ? 'sm:col-span-2' : ''}>
+                  <Field id={fieldId} label={f.label} error={(errors as any)[f.name]?.message} required={f.required} hint={f.hint}>
+                    <ControlledField id={fieldId} name={f.name} spec={f} control={control} disabled={isEdit && f.readOnly} />
+                  </Field>
+                </div>
+              )
+            })}
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>取消</Button>
@@ -138,8 +142,8 @@ export function FormDialog<T extends Record<string, any>>(props: FormDialogProps
   )
 }
 
-function ControlledField({ name, spec, control, disabled }: {
-  name: string; spec: FieldSpec; control: any; disabled?: boolean
+function ControlledField({ id, name, spec, control, disabled }: {
+  id: string; name: string; spec: FieldSpec; control: any; disabled?: boolean
 }) {
   return (
     <Controller
@@ -150,29 +154,29 @@ function ControlledField({ name, spec, control, disabled }: {
           case 'select':
             return (
               <Select value={field.value ?? ''} onValueChange={field.onChange} disabled={disabled}>
-                <SelectTrigger><SelectValue placeholder={spec.placeholder ?? '请选择'} /></SelectTrigger>
+                <SelectTrigger id={id}><SelectValue placeholder={spec.placeholder ?? '请选择'} /></SelectTrigger>
                 <SelectContent>
                   {spec.options?.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
                 </SelectContent>
               </Select>
             )
           case 'textarea':
-            return <Textarea {...field} value={field.value ?? ''} rows={2} placeholder={spec.placeholder} disabled={disabled} />
+            return <Textarea id={id} {...field} value={field.value ?? ''} rows={2} placeholder={spec.placeholder} disabled={disabled} />
           case 'number':
             return (
-              <Input type="number" {...field}
+              <Input id={id} type="number" {...field}
                 value={field.value ?? ''}
                 onChange={(e) => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))}
                 min={spec.min} max={spec.max} step={spec.step} placeholder={spec.placeholder} disabled={disabled} />
             )
           case 'date':
-            return <Input type="date" {...field} value={field.value ?? ''} disabled={disabled} />
+            return <Input id={id} type="date" {...field} value={field.value ?? ''} disabled={disabled} />
           case 'switch':
-            return <Switch checked={!!field.value} onCheckedChange={field.onChange} disabled={disabled} />
+            return <Switch id={id} checked={!!field.value} onCheckedChange={field.onChange} disabled={disabled} />
           case 'tags':
             return <TagsInput value={field.value ?? []} onChange={field.onChange} placeholder={spec.placeholder} disabled={disabled} />
           default:
-            return <Input {...field} value={field.value ?? ''} placeholder={spec.placeholder} disabled={disabled} />
+            return <Input id={id} {...field} value={field.value ?? ''} placeholder={spec.placeholder} disabled={disabled} />
         }
       }}
     />
@@ -214,12 +218,12 @@ function TagsInput({ value, onChange, placeholder, disabled }: {
   )
 }
 
-function Field({ label, error, required, hint, children }: {
-  label: string; error?: string; required?: boolean; hint?: string; children: React.ReactNode
+function Field({ id, label, error, required, hint, children }: {
+  id?: string; label: string; error?: string; required?: boolean; hint?: string; children: React.ReactNode
 }) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-sm">
+      <Label htmlFor={id} className="text-sm">
         {label}{required && <span className="ml-0.5 text-destructive">*</span>}
       </Label>
       {children}

@@ -104,18 +104,18 @@ export function StudentDialog({
         </DialogHeader>
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="姓名" error={errors.name?.message} required>
-              <Input {...register('name', { required: '请输入姓名' })} placeholder="学员姓名" />
+            <Field id="st-name" label="姓名" error={errors.name?.message} required>
+              <Input id="st-name" {...register('name', { required: '请输入姓名' })} placeholder="学员姓名" />
             </Field>
-            <Field label="学号" error={errors.studentNo?.message} required>
-              <Input {...register('studentNo', { required: '请输入学号' })} placeholder="如 S2025001" />
+            <Field id="st-studentNo" label="学号" error={errors.studentNo?.message} required>
+              <Input id="st-studentNo" {...register('studentNo', { required: '请输入学号' })} placeholder="如 S2025001" />
             </Field>
-            <Field label="联系电话">
-              <Input {...register('phone')} placeholder="手机号" />
+            <Field id="st-phone" label="联系电话">
+              <Input id="st-phone" {...register('phone')} placeholder="手机号" />
             </Field>
-            <Field label="性别">
+            <Field id="st-gender" label="性别">
               <Select value={gender} onValueChange={(v) => setValue('gender', v as Gender)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger id="st-gender"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {(Object.keys(GENDER_LABEL) as Gender[]).map((g) => (
                     <SelectItem key={g} value={g}>{GENDER_LABEL[g]}</SelectItem>
@@ -123,21 +123,21 @@ export function StudentDialog({
                 </SelectContent>
               </Select>
             </Field>
-            <Field label="年级">
-              <Input {...register('gradeLevel')} placeholder="如 高一" />
+            <Field id="st-gradeLevel" label="年级">
+              <Input id="st-gradeLevel" {...register('gradeLevel')} placeholder="如 高一" />
             </Field>
-            <Field label="出生日期">
-              <Input type="date" {...register('birthDate')} />
+            <Field id="st-birthDate" label="出生日期">
+              <Input id="st-birthDate" type="date" {...register('birthDate')} />
             </Field>
-            <Field label="监护人">
-              <Input {...register('guardianName')} placeholder="监护人姓名" />
+            <Field id="st-guardianName" label="监护人">
+              <Input id="st-guardianName" {...register('guardianName')} placeholder="监护人姓名" />
             </Field>
-            <Field label="监护人电话">
-              <Input {...register('guardianPhone')} placeholder="监护人电话" />
+            <Field id="st-guardianPhone" label="监护人电话">
+              <Input id="st-guardianPhone" {...register('guardianPhone')} placeholder="监护人电话" />
             </Field>
-            <Field label="状态">
+            <Field id="st-status" label="状态">
               <Select value={status} onValueChange={(v) => setValue('status', v as StudentStatus)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger id="st-status"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {(Object.keys(STUDENT_STATUS_LABEL) as StudentStatus[]).map((s) => (
                     <SelectItem key={s} value={s}>{STUDENT_STATUS_LABEL[s]}</SelectItem>
@@ -145,12 +145,12 @@ export function StudentDialog({
                 </SelectContent>
               </Select>
             </Field>
-            <Field label="剩余课时">
-              <Input type="number" min={0} {...register('balanceLessons', { valueAsNumber: true })} />
+            <Field id="st-balanceLessons" label="剩余课时">
+              <Input id="st-balanceLessons" type="number" min={0} {...register('balanceLessons', { valueAsNumber: true })} />
             </Field>
           </div>
-          <Field label="备注">
-            <Textarea {...register('remark')} rows={2} placeholder="选填" />
+          <Field id="st-remark" label="备注">
+            <Textarea id="st-remark" {...register('remark')} rows={2} placeholder="选填" />
           </Field>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>取消</Button>
@@ -165,12 +165,12 @@ export function StudentDialog({
   )
 }
 
-function Field({ label, error, required, children }: {
-  label: string; error?: string; required?: boolean; children: React.ReactNode
+function Field({ id, label, error, required, children }: {
+  id?: string; label: string; error?: string; required?: boolean; children: React.ReactNode
 }) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-sm">
+      <Label htmlFor={id} className="text-sm">
         {label}{required && <span className="ml-0.5 text-destructive">*</span>}
       </Label>
       {children}
