@@ -98,12 +98,19 @@ function TermsTab() {
     } catch (e) { toastError(e) }
   }
 
+  const terms = data?.items ?? []
+  /** 已有当前学期时，新建不默认夺权——避免「建下学期」静默把全校时间锚点搬到未来周段。 */
+  const hasCurrentTerm = terms.some((t) => t.isCurrent)
+
   const fields: FieldSpec[] = [
     { name: 'name', label: '学期名称', type: 'text', required: true, colSpan: 2, placeholder: '如 2026-2027 学年第一学期' },
     { name: 'startDate', label: '开始日期（第1周周一）', type: 'date', required: true, hint: '非周一会自动规整到所在周周一' },
     { name: 'endDate', label: '结束日期', type: 'date', required: true },
     { name: 'totalWeeks', label: '总周数', type: 'number', min: 1, max: 40 },
-    { name: 'isCurrent', label: '设为当前学期', type: 'switch' },
+    {
+      name: 'isCurrent', label: '设为当前学期', type: 'switch',
+      hint: '当前学期是「日期 ↔ 教学周」的锚点；勾选后课表周次与调换课立即改按此学期解析（原当前学期会被取消）',
+    },
   ]
 
   const columns: Column<TermDto>[] = [
@@ -140,7 +147,7 @@ function TermsTab() {
       <FormDialog
         open={dialogOpen} onOpenChange={setDialogOpen}
         title={editing ? '编辑学期' : '新建学期'} fields={fields} schema={termSchema as any}
-        defaultValues={editing ? { ...editing, isCurrent: editing.isCurrent } : { totalWeeks: 20, isCurrent: true, startDate: '', endDate: '' }}
+        defaultValues={editing ? { ...editing, isCurrent: editing.isCurrent } : { totalWeeks: 20, isCurrent: !hasCurrentTerm, startDate: '', endDate: '' }}
         endpoint="/api/terms" editId={editing?.id ?? null}
         onSaved={() => { setDialogOpen(false); reload() }}
         transform={(v) => ({ ...v, totalWeeks: Number(v.totalWeeks) || 20, isCurrent: !!v.isCurrent })}
