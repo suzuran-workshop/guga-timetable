@@ -366,6 +366,7 @@ export interface ScheduleDto {
   className: string
   courseName: string
   courseColor: number
+  teacherId: string | null
   teacherName: string | null
   weekday: number
   startPeriod: number
@@ -587,5 +588,109 @@ export function dateOfWeekday(termStart: string, week: number, weekday: number):
 /** 某教学周的周一日期（termStart 视为第 1 周周一） */
 export function weekStartDate(termStart: string, week: number): string {
   return toISODate(parseDate(termStart) + (week - 1) * 7 * MS_PER_DAY)
+}
+
+// ---------------------------------------------------------------------------
+// 调换课：排课例外（date-specific override）
+// ---------------------------------------------------------------------------
+
+/**
+ * 排课模型是「按周循环」的（weekday + 节次 + 周段），本身没有「某一次课」的概念。
+ * 调换课针对的是**具体日期的那一次课**，故引入例外层：
+ *
+ * 一条例外 = (scheduleId, originalDate) 定位到的那次课 → 施加某种变更。
+ * 解析某天的实际课次 = 循环排课命中该天的 − 被移出/取消的 + 被移入的（含代课覆盖）。
+ *
+ * 「对调两次课」= 两条互指对方日期的 moved 例外（A 的课移到 B 的日期，B 的课移到 A 的日期）。
+ */
+
+/** 例外动作：停课 / 调课（改期改节改教室）/ 代课（仅换教师） */
+export const ExceptionAction = ['cancelled', 'moved', 'substituted'] as const
+export type ExceptionAction = (typeof ExceptionAction)[number]
+export const EXCEPTION_ACTION_LABEL: Record<ExceptionAction, string> = {
+  cancelled: '停课',
+  moved: '调课',
+  substituted: '代课',
+}
+
+/** 解析后某次课的状态（供单日课表 UI 呈现） */
+export const LessonStatus = ['normal', 'cancelled', 'moved_out', 'moved_in', 'substituted'] as const
+export type LessonStatus = (typeof LessonStatus)[number]
+export const LESSON_STATUS_LABEL: Record<LessonStatus, string> = {
+  normal: '正常',
+  cancelled: '已停课',
+  moved_out: '已调出',
+  moved_in: '调入',
+  substituted: '代课',
+}
+
+/** 排课例外记录 */
+export interface ScheduleExceptionDto {
+  id: string
+  scheduleId: string
+  /** 原上课日期（被变更的那一次课）YYYY-MM-DD */
+  originalDate: string
+  action: ExceptionAction
+  /** moved：目标日期 */
+  targetDate: string | null
+  /** moved：目标节次（缺省沿用原节次） */
+  targetStartPeriod: number | null
+  targetEndPeriod: number | null
+  /** moved：目标教室（缺省沿用原教室） */
+  targetRoom: string | null
+  /** substituted：代课教师 id */
+  teacherId: string | null
+  reason: string | null
+  createdBy: string | null
+  createdAt: number
+}
+
+export const scheduleExceptionSchema = z.object({
+  scheduleId: trimmed(36),
+  originalDate: trimmed(10),
+  action: z.enum(ExceptionAction),
+  targetDate: optionalTrimmed(10),
+  targetStartPeriod: z.number().int().min(1).max(14).nullable().optional(),
+  targetEndPeriod: z.number().int().min(1).max(14).nullable().optional(),
+  targetRoom: optionalTrimmed(60),
+  teacherId: optionalTrimmed(36),
+  reason: optionalTrimmed(200),
+})
+export type ScheduleExceptionInput = z.infer<typeof scheduleExceptionSchema>
+
+/** 对调两次课：{ scheduleA, dateA } ↔ { scheduleB, dateB } */
+export const swapLessonsSchema = z.object({
+  scheduleIdA: trimmed(36),
+  dateA: trimmed(10),
+  scheduleIdB: trimmed(36),
+  dateB: trimmed(10),
+  reason: optionalTrimmed(200),
+})
+export type SwapLessonsInput = z.infer<typeof swapLessonsSchema>
+
+/**
+ * 解析后的「一次课」（单日课表的基本单元）。
+ * 与 ScheduleDto 的区别：带具体 date/week、可能被例外覆盖（教师/节次/教室），并有 status。
+ */
+export interface ResolvedLesson {
+  /** 稳定标识：循环排课用 `${scheduleId}`，移入的用 `${scheduleId}@${date}` */
+  key: string
+  scheduleId: string
+  date: string
+  week: number | null
+  weekday: number
+  startPeriod: number
+  endPeriod: number
+  room: string | null
+  classId: string
+  className: string
+  courseName: string
+  courseColor: number
+  teacherId: string | null
+  teacherName: string | null
+  status: LessonStatus
+  /** 命中的例外 id（normal 为 null） */
+  exceptionId: string | null
+  reason: string | null
 }
 

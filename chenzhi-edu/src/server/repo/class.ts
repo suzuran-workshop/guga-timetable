@@ -84,7 +84,7 @@ export class ClassRepo extends Repository {
       startPeriod: t.schedules.startPeriod, endPeriod: t.schedules.endPeriod,
       weekStart: t.schedules.weekStart, weekEnd: t.schedules.weekEnd, room: t.schedules.room,
       className: t.classes.name, courseName: t.courses.name, courseColor: t.courses.colorIndex,
-      teacherName: t.teachers.name,
+      teacherId: t.teachers.id, teacherName: t.teachers.name,
     }).from(t.schedules)
       .leftJoin(t.classes, eq(t.schedules.classId, t.classes.id))
       .leftJoin(t.courses, eq(t.classes.courseId, t.courses.id))
@@ -94,7 +94,7 @@ export class ClassRepo extends Repository {
     for (const s of scheds) {
       const dto: ScheduleDto = {
         id: s.id, classId: s.classId, className: s.className, courseName: s.courseName,
-        courseColor: Number(s.courseColor), teacherName: s.teacherName,
+        courseColor: Number(s.courseColor), teacherId: s.teacherId ?? null, teacherName: s.teacherName,
         weekday: Number(s.weekday), startPeriod: Number(s.startPeriod), endPeriod: Number(s.endPeriod),
         weekStart: Number(s.weekStart), weekEnd: Number(s.weekEnd), room: s.room,
       }

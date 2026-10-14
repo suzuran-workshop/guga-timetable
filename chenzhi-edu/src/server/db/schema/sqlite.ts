@@ -203,10 +203,36 @@ export const terms = sqliteTable('terms', {
   index('terms_start_idx').on(t.startDate),
 ])
 
+/**
+ * 排课例外（调换课）：针对「某循环排课在具体日期的一次课」施加变更。
+ * (scheduleId, originalDate) 唯一定位一次课；action 决定变更类型：
+ * cancelled 停课 / moved 调课（改期改节改教室）/ substituted 代课（换教师）。
+ * 对调 = 两条互指对方日期的 moved。
+ */
+export const scheduleExceptions = sqliteTable('schedule_exceptions', {
+  id: sqliteCol.id(),
+  scheduleId: sqliteCol.text().notNull(),
+  originalDate: sqliteCol.text().notNull(),
+  action: sqliteCol.text().notNull(),
+  targetDate: sqliteCol.text(),
+  targetStartPeriod: sqliteCol.int(),
+  targetEndPeriod: sqliteCol.int(),
+  targetRoom: sqliteCol.text(),
+  teacherId: sqliteCol.text(),
+  reason: sqliteCol.text(),
+  createdBy: sqliteCol.text(),
+  createdAt: sqliteCol.epochMs().notNull().default(nowMs),
+}, (t) => [
+  // 同一次课同一动作只允许一条（moved 对调时 A→B 与 B→A 是不同 scheduleId，不冲突）
+  uniqueIndex('sched_exc_uniq').on(t.scheduleId, t.originalDate, t.action),
+  index('sched_exc_date_idx').on(t.originalDate),
+  index('sched_exc_target_date_idx').on(t.targetDate),
+])
+
 /** 业务 schema 汇总 */
 export const sqliteSchema = {
   students, teachers, courses, classes, classMembers, schedules,
-  attendance, grades, orders, files, profiles, terms,
+  attendance, grades, orders, files, profiles, terms, scheduleExceptions,
 }
 
 /**

@@ -208,10 +208,33 @@ export const terms = pgTable('terms', {
   index('terms_start_idx').on(t.startDate),
 ])
 
+/**
+ * 排课例外（调换课）：针对某循环排课在具体日期的一次课施加变更。
+ * cancelled 停课 / moved 调课 / substituted 代课；对调 = 两条互指对方日期的 moved。
+ */
+export const scheduleExceptions = pgTable('schedule_exceptions', {
+  id: pgCol.id(),
+  scheduleId: pgCol.text().notNull(),
+  originalDate: pgCol.text().notNull(),
+  action: pgCol.text().notNull(),
+  targetDate: pgCol.text(),
+  targetStartPeriod: pgCol.int(),
+  targetEndPeriod: pgCol.int(),
+  targetRoom: pgCol.text(),
+  teacherId: pgCol.text(),
+  reason: pgCol.text(),
+  createdBy: pgCol.text(),
+  createdAt: pgCol.epochMs().notNull().default(nowMs),
+}, (t) => [
+  uniqueIndex('sched_exc_uniq').on(t.scheduleId, t.originalDate, t.action),
+  index('sched_exc_date_idx').on(t.originalDate),
+  index('sched_exc_target_date_idx').on(t.targetDate),
+])
+
 /** 业务 schema 汇总（迁移与 parity 校验用） */
 export const pgSchema = {
   students, teachers, courses, classes, classMembers, schedules,
-  attendance, grades, orders, files, profiles, terms,
+  attendance, grades, orders, files, profiles, terms, scheduleExceptions,
 }
 
 /** 完整 schema（业务 + auth + license 内置表） */
