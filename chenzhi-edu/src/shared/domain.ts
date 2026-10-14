@@ -116,7 +116,7 @@ export const Permission = [
   'class:read', 'class:write', 'class:delete',
   'schedule:read', 'schedule:write',
   'attendance:read', 'attendance:write',
-  'grade:read', 'grade:write',
+  'grade:read', 'grade:write', 'grade:delete',
   'order:read', 'order:write',
   'dashboard:read',
   'setting:write',

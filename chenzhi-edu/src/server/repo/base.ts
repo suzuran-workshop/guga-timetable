@@ -24,10 +24,10 @@ export class Repository {
   }
 }
 
-/** 分页参数 */
+/** 分页参数（page/pageSize 来自 URL query，可为字符串；normalizePage 统一 Number 化） */
 export interface PageQuery {
-  page?: number
-  pageSize?: number
+  page?: number | string
+  pageSize?: number | string
   keyword?: string
 }
 

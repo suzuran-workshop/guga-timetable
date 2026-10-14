@@ -44,6 +44,11 @@ export class GradeRepo extends Repository {
     return { items: rows.map((r: any) => this.toDto(r)), total: Number(totalRow[0]?.c ?? 0), page, pageSize }
   }
 
+  async getById(id: string): Promise<GradeDto | null> {
+    const rows = await this.selectJoined().where(eq(this.t.grades.id, id)).limit(1)
+    return rows[0] ? this.toDto(rows[0]) : null
+  }
+
   async create(input: GradeInput): Promise<GradeDto> {
     const now = this.now()
     const rows = await this.db.insert(this.t.grades).values({
