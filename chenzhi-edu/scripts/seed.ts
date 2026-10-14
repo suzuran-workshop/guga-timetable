@@ -62,17 +62,19 @@ if (existingCourses[0]) {
 
 logger.info('灌入演示数据…')
 
-// 课程
+// 课程（pricePerLesson 单位：分，20000 = ¥200/课时）
 const courses = [
-  { name: '高一数学·同步', code: 'MATH-101', subject: '数学', creditHours: 4, totalLessons: 40, pricePerLesson: 200, colorIndex: 1 },
-  { name: '高一英语·同步', code: 'ENG-101', subject: '英语', creditHours: 4, totalLessons: 40, pricePerLesson: 180, colorIndex: 2 },
-  { name: '高二物理·提高', code: 'PHY-201', subject: '物理', creditHours: 3, totalLessons: 30, pricePerLesson: 260, colorIndex: 4 },
-  { name: '初三化学·冲刺', code: 'CHEM-301', subject: '化学', creditHours: 3, totalLessons: 24, pricePerLesson: 220, colorIndex: 6 },
+  { name: '高一数学·同步', code: 'MATH-101', subject: '数学', creditHours: 4, totalLessons: 40, pricePerLesson: 20000, colorIndex: 1 },
+  { name: '高一英语·同步', code: 'ENG-101', subject: '英语', creditHours: 4, totalLessons: 40, pricePerLesson: 18000, colorIndex: 2 },
+  { name: '高二物理·提高', code: 'PHY-201', subject: '物理', creditHours: 3, totalLessons: 30, pricePerLesson: 26000, colorIndex: 4 },
+  { name: '初三化学·冲刺', code: 'CHEM-301', subject: '化学', creditHours: 3, totalLessons: 24, pricePerLesson: 22000, colorIndex: 6 },
 ]
 const courseIds: string[] = []
+const coursePrices: number[] = []
 for (const c of courses) {
   const created = await svc.course.create(c as any)
   courseIds.push(created.id)
+  coursePrices.push(created.pricePerLesson)
 }
 
 // 教师
@@ -135,12 +137,13 @@ for (let i = 0; i < studentNames.length; i++) {
   studentIds.push(s.id)
   // 入班（轮流分配到 4 个班）
   await svc.klass.addMember(classIds[i % 4], s.id)
-  // 订单充值（已支付）
+  // 订单充值（已支付）：金额 = 课时数 × 课程单价（分）
+  const lessons = 20 + (i % 3) * 10
   await svc.order.create({
     studentId: s.id,
     courseId: courseIds[i % 4],
-    lessonsPurchased: 20 + (i % 3) * 10,
-    amount: (20 + (i % 3) * 10) * 200,
+    lessonsPurchased: lessons,
+    amount: lessons * coursePrices[i % 4],
     payMethod: (['wechat', 'alipay', 'card'] as const)[i % 3],
     status: 'paid',
   } as any, adminId)

@@ -10,8 +10,8 @@
     "resolveJsonModule": true,
     "declaration": false,
     "sourceMap": true,
-    "outDir": "dist/server",
-    "rootDir": ".",
+    "outDir": "dist",
+    "rootDir": "src",
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
