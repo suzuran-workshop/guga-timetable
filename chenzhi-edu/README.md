@@ -64,7 +64,7 @@ npm run dev            # 终端 B：并发拉起 API(:8799 tsx watch) + Web(:517
 
 ```bash
 npm run build          # E2E 打 dist 产物，需先构建
-npm run test:e2e       # Playwright（16 项，真实 Chromium；webServer 自动拉起授权中心+API+种子）
+npm run test:e2e       # Playwright（24 项，真实 Chromium；webServer 自动拉起授权中心+API+种子）
 ```
 
 > 首次运行需 `npx playwright install chromium`；境内网络建议
@@ -72,7 +72,7 @@ npm run test:e2e       # Playwright（16 项，真实 Chromium；webServer 自�
 
 ## 当前状态
 
-- **阶段**：功能完整的可运行原型（16 个业务页 + 六模块后端全部接通，32 项单测 + 22 项 E2E 全绿）。
+- **阶段**：功能完整的可运行原型（16 个业务页 + 六模块后端全部接通，32 项单测 + 24 项 E2E 全绿）。
 - **已知限制**：
   - 授权中心为**本地 genuine-mock**（`tools/genuine-mock.ts`），非生产级中央授权服务；生产应对接供应方的 homura-genuine。
   - 对象存储用 **local-fs** 后端（`data/storage`）；切 S3/supabase 只需替换 `src/server/storage/index.ts`。

@@ -42,7 +42,7 @@ basePath → requestId+访问日志 → healthz → licenseGuard → sessionMidd
 ## 验收标准
 
 - [x] 六模块在 `index.ts` 真实装配，启动日志逐模块可见（db parity / storage ready / auth / license verified / static mounted）。
-- [x] standalone 形态：healthz=200、登录→API→静态→SPA fallback 全链路通（E2E 16 项）。
+- [x] standalone 形态：healthz=200、登录→API→静态→SPA fallback 全链路通（E2E `auth.spec` + `academic.spec` + `rbac-storage.spec`）。
 - [x] license active→suspended 切换：`/api` 200→503，`/_license`/`/healthz`/`/auth` 仍可达（手工集成测试）。
 - [x] 验签 `getSignatureState()==='verified'`（E2E `授权状态端点`）。
 - [x] 文件上传→代理下载→删除全链路（E2E `文件上传`，走 storage + /files 代理）。

@@ -132,3 +132,25 @@
 - 为什么：选 A 把负担推给用户且易困惑（「为什么必须是周一」）；B 保证不变量恒成立，纯函数可安全假设锚点是周一。
 - 后果：学期起点永远是周一；17 项日期单测含 `startOfWeekMonday` 规整与往返一致性；前端 `currentWeekFor` 与后端 `weekOfDate` 同算法（shared 纯函数），不会漂移。
 - 何时重新审视：若支持「学期从周日开始」等异构校历，需把锚点 weekday 参数化。
+
+## ADR-013：自动派课契约收口到 shared/domain.ts（消灭前后端副本）
+
+- 日期：2026-10-14
+- 状态：已采纳
+- 背景：`AutoScheduleRequest` / `AutoScheduleResult` 原先定义在 `src/server/service/autoSchedule.ts`（后端），而前端 `pages/auto-schedule.tsx` 手抄了一份 `AutoResult` 接口。两份定义**结构相同但无编译期关联**——任一侧改字段名，另一侧不会报错，只会在运行时表现为「结果面板显示 undefined」。这违背本项目头号约定（AGENTS.md：`shared/domain.ts` 前后端同源）。发现于验证阶段：前端文件里那句注释「与后端 AutoScheduleResult 对齐」恰恰暴露了它靠人工对齐。
+- 考虑过的方案：(A) 保持现状，靠注释与人工纪律；(B) 前端 `import type` 后端 service 的类型；(C) 把契约搬到 `shared/domain.ts`，前后端都从那里导入。
+- 决策：**选 C**。`ScheduleSlot` / `AutoScheduleRequest` / `AutoScheduleResult` 定义在 `shared/domain.ts`；后端 service 只保留 `type Slot = ScheduleSlot` 本地别名（避免大改内部实现），`api/schedules.ts` 与前端页面均改从 shared 导入。
+- 为什么不选其他：A 把类型安全退化成人工纪律，且已经发生过一次「注释代替契约」；B 让前端 import 后端目录，跨层依赖、把 service 的内部类型泄漏成公共契约（service 里的 `Slot`/`Task` 是内部实现细节，不该被前端看见）。
+- 后果：改契约只改一处，编译期即锁定前后端一致。**用变异测试验证过约束真的生效**——把 shared 的 `backtracks` 改名后，前端 `tsc` 立刻报 `TS2339: Property 'backtracks' does not exist`（收口前不会报错）。同时把 `AutoScheduleResult` 的 all-or-nothing 语义（`ok=false` 时 `placed` 恒为空）写进了契约注释，使其成为显式承诺而非实现巧合。
+- 何时重新审视：若后续按端点批量提取契约，可考虑用 zod schema 统一「校验 + 类型」两层（目前 request 侧仍是手写校验，见 api/schedules.ts）。
+
+## ADR-014：已有当前学期时，新建学期不默认夺权
+
+- 日期：2026-10-14
+- 状态：已采纳
+- 背景：「新建学期」对话框原先无条件默认 `isCurrent: true`。由于当前学期是全局**时间锚点**（课表周次、调换课日期解析、自动派课周段都依赖它），这等于「建一个下学期计划」会立刻把全校时间锚点搬到未来周段。实测后果：`/api/terms/context` 的 `currentWeek` 跳到 1，而今天的日期落在新学期的 `weekOfDate` 范围外 → 课表显示空周、调换课按错误周次校验。这个问题是在验证阶段被真实撞见的（E2E「新建学期」测试跑完后，当前学期变成了测试建的 2027 学期），不是假想场景。
+- 考虑过的方案：(A) 保持默认夺权，靠用户记得手动关掉开关；(B) 仅当**系统中还没有任何当前学期**时才默认勾选（首次建学期仍然一步到位）；(C) 后端拒绝在有当前学期时创建 `isCurrent` 学期，强制两步。
+- 决策：**选 B**。前端 `hasCurrentTerm = terms.some(t => t.isCurrent)`，`defaultValues.isCurrent = !hasCurrentTerm`，并在字段 hint 写明后果（「勾选后课表周次与调换课立即改按此学期解析，原当前学期会被取消」）。后端语义不变（显式传 `isCurrent:true` 仍然夺权，`setCurrent` 仍然是正规切换入口）。
+- 为什么不选其他：A 把「静默改变全局状态」伪装成默认值，属于 footgun——用户点「创建」时的心智是「登记一个学期」，不是「切换全校锚点」；C 过度限制，首次建学期会变成两步，且与「设为当前」按钮的职责重复。B 保留首次建学期的便利，只收窄**已有锚点时**的意外副作用。
+- 后果：学期切换变成显式动作（勾开关或点「设为当前」），不再有隐式全局副作用。E2E 新增「已有当前学期时新建不夺权」测试锁定该语义（断言开关默认 `aria-checked=false` + 建完后 `context.term.id` 与 `currentWeek` 均未变）。**该测试经变异验证有牙齿**：把默认值退回 `isCurrent: true` 后测试立即失败。
+- 何时重新审视：若引入「校历」概念（多个并行学期/分校区），锚点唯一性假设需要重新设计。
