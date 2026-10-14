@@ -2,6 +2,7 @@ import { and, desc, eq, like, or, sql, count } from 'drizzle-orm'
 import type { DbBundle } from '../db/index.js'
 import { sqliteSchema } from '../db/schema/sqlite.js'
 import { pgSchema } from '../db/schema/pg.js'
+import { sqliteAuthTables, pgAuthTables } from '@homurajs/auth/tables'
 
 /**
  * 双方言查询收口层。
@@ -25,6 +26,8 @@ export interface TableRefs {
   orders: any
   files: any
   profiles: any
+  /** @homurajs/auth 的 users 表（身份锚点，库拥有），按方言选取 */
+  authUsers: any
 }
 
 let refs: TableRefs | null = null
@@ -33,6 +36,7 @@ let dialectRef: 'pg' | 'sqlite' = 'sqlite'
 export function initTables(b: DbBundle): TableRefs {
   dialectRef = b.dialect
   const schema = b.dialect === 'pg' ? pgSchema : sqliteSchema
+  const authTables = b.dialect === 'pg' ? pgAuthTables : sqliteAuthTables
   refs = {
     students: schema.students,
     teachers: schema.teachers,
@@ -45,6 +49,7 @@ export function initTables(b: DbBundle): TableRefs {
     orders: schema.orders,
     files: schema.files,
     profiles: schema.profiles,
+    authUsers: authTables.users,
   }
   return refs
 }

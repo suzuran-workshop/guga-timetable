@@ -11,3 +11,6 @@ coverage/
 test-results/
 playwright-report/
 *.log
+
+# genuine Ed25519 私钥（演示用，勿提交）
+tools/.keys/
