@@ -694,3 +694,50 @@ export interface ResolvedLesson {
   reason: string | null
 }
 
+
+// ─── 自动派课（贪心 + 回溯）契约 ───────────────────────────────────────────
+// 前后端同源：API 校验、算法服务、前端页面共用这几个类型。
+// ⚠ 不要在任何一侧另抄一份——改字段必须只改这里（AGENTS.md：domain.ts 前后端同源）。
+
+/** 一个连续节次窗口（排课/派课的最小时间单元）。 */
+export interface ScheduleSlot {
+  weekday: number
+  startPeriod: number
+  endPeriod: number
+}
+
+/** `POST /api/schedules/auto` 的请求体。 */
+export interface AutoScheduleRequest {
+  /** 要排课的班级 id 列表 */
+  classIds: string[]
+  /** 每班每周排课次数（每次 = 一个连续节次窗口） */
+  lessonsPerWeek: number
+  /** 每次课的连续节数（如 2 = 连堂两节） */
+  periodsPerLesson: number
+  /** 教学周段 */
+  weekStart?: number
+  weekEnd?: number
+  /** 允许的星期范围（缺省 1~5，即工作日） */
+  weekdays?: number[]
+  /** 允许的节次窗口起点（缺省全部节次） */
+  allowedStartPeriods?: number[]
+  /** 教室池：班级未指定教室时，从此池按可用性分配；空则不设教室（不做教室冲突） */
+  rooms?: string[]
+  /** 最多回溯步数（防极端规模下指数爆炸）；缺省 20000 */
+  maxBacktracks?: number
+}
+
+/**
+ * `POST /api/schedules/auto` 的响应体。
+ *
+ * all-or-nothing 语义：`ok=false` 时 `placed` 恒为空数组——搜索排不全则一节都不落库，
+ * 全部任务记入 `failed`（前端据此不会误显示「部分成功」）。
+ * 约束过紧不是参数错误，故仍回 200；只有请求体本身非法才回 4xx。
+ */
+export interface AutoScheduleResult {
+  ok: boolean
+  placed: { classId: string; className: string; slot: ScheduleSlot; room: string | null }[]
+  failed: { classId: string; className: string; reason: string }[]
+  backtracks: number
+  message: string
+}

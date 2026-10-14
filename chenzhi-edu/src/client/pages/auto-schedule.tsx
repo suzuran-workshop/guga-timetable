@@ -16,22 +16,11 @@ import { Checkbox } from '../components/ui/checkbox.js'
 import { Badge } from '../components/ui/badge.js'
 import { Separator } from '../components/ui/separator.js'
 import { Skeleton } from '../components/ui/skeleton.js'
-import { WEEKDAY_LABEL, periodRange } from '../../shared/domain.js'
+import { WEEKDAY_LABEL, periodRange, type AutoScheduleResult } from '../../shared/domain.js'
 import { cn } from '../lib/utils.js'
 
-/** POST /api/schedules/auto 的响应体（与后端 AutoScheduleResult 对齐） */
-interface AutoResult {
-  ok: boolean
-  placed: {
-    classId: string
-    className: string
-    slot: { weekday: number; startPeriod: number; endPeriod: number }
-    room: string | null
-  }[]
-  failed: { classId: string; className: string; reason: string }[]
-  backtracks: number
-  message: string
-}
+/** POST /api/schedules/auto 的响应体，契约单一源在 shared/domain.ts。 */
+type AutoResult = AutoScheduleResult
 
 const WEEKDAYS = [1, 2, 3, 4, 5, 6, 7]
 

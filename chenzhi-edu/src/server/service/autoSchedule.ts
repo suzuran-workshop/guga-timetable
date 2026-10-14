@@ -1,6 +1,12 @@
 import type { Services } from '../repo/index.js'
 import { createLogger } from '@homurajs/core'
-import { PERIODS, type ScheduleInput } from '../../shared/domain.js'
+import {
+  PERIODS,
+  type AutoScheduleRequest,
+  type AutoScheduleResult,
+  type ScheduleInput,
+  type ScheduleSlot,
+} from '../../shared/domain.js'
 
 /**
  * 自动派课（贪心 + 回溯）。
@@ -19,35 +25,8 @@ import { PERIODS, type ScheduleInput } from '../../shared/domain.js'
  *   「占位」用内存中的虚拟排课集合参与冲突检测，避免每次都查库；最终成功的一批才真正落库。
  */
 
-interface Slot { weekday: number; startPeriod: number; endPeriod: number }
-
-export interface AutoScheduleRequest {
-  /** 要排课的班级 id 列表 */
-  classIds: string[]
-  /** 每班每周排课次数（每次 = 一个连续节次窗口） */
-  lessonsPerWeek: number
-  /** 每次课的连续节数（如 2 = 连堂两节） */
-  periodsPerLesson: number
-  /** 教学周段 */
-  weekStart?: number
-  weekEnd?: number
-  /** 允许的星期范围（缺省 1~5，即工作日） */
-  weekdays?: number[]
-  /** 允许的节次窗口起点（缺省全部节次） */
-  allowedStartPeriods?: number[]
-  /** 教室池：班级未指定教室时，从此池按可用性分配；空则不设教室（不做教室冲突） */
-  rooms?: string[]
-  /** 最多回溯步数（防极端规模下指数爆炸）；缺省 20000 */
-  maxBacktracks?: number
-}
-
-export interface AutoScheduleResult {
-  ok: boolean
-  placed: { classId: string; className: string; slot: Slot; room: string | null }[]
-  failed: { classId: string; className: string; reason: string }[]
-  backtracks: number
-  message: string
-}
+/** 候选时段（连续节次窗口）。契约定义在 shared/domain.ts，此处仅取本地别名。 */
+type Slot = ScheduleSlot
 
 /** 一个待排任务 */
 interface Task { classId: string; className: string; teacherId: string | null; room: string | null; index: number }
