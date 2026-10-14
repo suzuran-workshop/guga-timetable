@@ -14,3 +14,8 @@ playwright-report/
 
 # genuine Ed25519 私钥（演示用，勿提交）
 tools/.keys/
+
+# 验证产物
+screenshots/
+test-results/
+playwright-report/

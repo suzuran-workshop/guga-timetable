@@ -41,6 +41,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
         <Button
           variant="ghost"
           size="icon"
+          className="relative"
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           aria-label="切换主题"
         >
