@@ -25,11 +25,11 @@ export default defineConfig({
     port: 5173,
     proxy: {
       // 业务 API + 认证 + 文件代理 + 授权状态，全部转发到后端
-      '/api': { target: 'http://127.0.0.1:8787', changeOrigin: true },
-      '/auth': { target: 'http://127.0.0.1:8787', changeOrigin: true },
-      '/files': { target: 'http://127.0.0.1:8787', changeOrigin: true },
-      '/healthz': { target: 'http://127.0.0.1:8787', changeOrigin: true },
-      '/_license': { target: 'http://127.0.0.1:8787', changeOrigin: true },
+      '/api': { target: 'http://127.0.0.1:8799', changeOrigin: true },
+      '/auth': { target: 'http://127.0.0.1:8799', changeOrigin: true },
+      '/files': { target: 'http://127.0.0.1:8799', changeOrigin: true },
+      '/healthz': { target: 'http://127.0.0.1:8799', changeOrigin: true },
+      '/_license': { target: 'http://127.0.0.1:8799', changeOrigin: true },
     },
   },
 })

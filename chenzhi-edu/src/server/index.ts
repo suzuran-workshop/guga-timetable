@@ -37,7 +37,10 @@ async function main() {
   const logger = createLogger({ level: cfg.get('logLevel') as any }).child('boot')
 
   // ---- 1. 形态探测 + adapter 选择（app-kit / core）----
+  // 'auto' 是 createApp 的选项语义，不是 detectRuntime 的合法 env 值：
+  // 走启发式探测前必须把 HOMURA_RUNTIME=auto 从 env 摘掉，否则 detectRuntime 抛非法值。
   const runtimeOpt = cfg.get('runtime')
+  if (runtimeOpt === 'auto') delete process.env.HOMURA_RUNTIME
   const target = runtimeOpt === 'auto' ? detectRuntime(process.env).target : (runtimeOpt as any)
   const adapter = target === 'qw-pages' ? createQwPagesAdapter() : createNodeAdapter()
   const healthzPath = healthzPathFor(target)
@@ -86,9 +89,10 @@ async function main() {
   const apiRoutes = createApiRoutes({ svc, profiles, storage, ns: 'chenzhi' })
 
   // 根级路由：/_license（守卫豁免）+ /files 代理 + /api（登录+鉴权）
+  // 注意：createFileProxyRoutes 内部已注册在 /files/:key{.+}，故挂在根（不能再加 /files 前缀）
   const appRoutes = new Hono()
   appRoutes.route(LICENSE_STATUS_PATH, licenseRoutes(license?.client ?? null))
-  appRoutes.route('/files', fileProxyRoutes(storage))
+  appRoutes.route('/', fileProxyRoutes(storage))
   appRoutes.route('/api', apiRoutes)
 
   // ---- 8. 静态资源（生产：dist/client；开发由 Vite dev server 提供）----
