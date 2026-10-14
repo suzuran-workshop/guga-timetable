@@ -8,6 +8,7 @@ import { teacherRoutes } from './teachers.js'
 import { courseRoutes } from './courses.js'
 import { classRoutes } from './classes.js'
 import { scheduleRoutes } from './schedules.js'
+import { scheduleExceptionRoutes } from './scheduleExceptions.js'
 import { attendanceRoutes } from './attendance.js'
 import { gradeRoutes } from './grades.js'
 import { orderRoutes } from './orders.js'
@@ -45,6 +46,7 @@ export function createApiRoutes(opts: {
   api.route('/courses', courseRoutes(svc))
   api.route('/classes', classRoutes(svc))
   api.route('/schedules', scheduleRoutes(svc))
+  api.route('/schedule-exceptions', scheduleExceptionRoutes(svc))
   api.route('/attendance', attendanceRoutes(svc))
   api.route('/grades', gradeRoutes(svc))
   api.route('/orders', orderRoutes(svc))

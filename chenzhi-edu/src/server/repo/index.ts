@@ -11,6 +11,7 @@ import { FileRepo } from './file.js'
 import { TermRepo } from './term.js'
 import { ScheduleExceptionRepo } from './scheduleException.js'
 import { DashboardService } from '../service/dashboard.js'
+import { AutoScheduleService } from '../service/autoSchedule.js'
 
 /**
  * 服务容器：一次性构造所有仓储 + 聚合服务，注入 Hono 路由的 deps。
@@ -29,6 +30,7 @@ export class Services {
   readonly term: TermRepo
   readonly scheduleException: ScheduleExceptionRepo
   readonly dashboard: DashboardService
+  readonly autoSchedule: AutoScheduleService
 
   constructor(bundle: DbBundle) {
     this.student = new StudentRepo(bundle)
@@ -43,5 +45,6 @@ export class Services {
     this.term = new TermRepo(bundle)
     this.scheduleException = new ScheduleExceptionRepo(bundle, this.schedule, this.term)
     this.dashboard = new DashboardService(this, bundle)
+    this.autoSchedule = new AutoScheduleService(this)
   }
 }
