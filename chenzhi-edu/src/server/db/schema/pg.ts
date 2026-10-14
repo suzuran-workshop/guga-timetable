@@ -1,7 +1,7 @@
 import { pgCol, pgJson, pgTable } from '@homurajs/db/schema-helpers'
 import { pgAuthTables } from '@homurajs/auth/tables'
 import { pgLicenseTables } from '@homurajs/license/tables'
-import { index, uniqueIndex } from 'drizzle-orm/pg-core'
+import { boolean, index, uniqueIndex } from 'drizzle-orm/pg-core'
 import { sql } from 'drizzle-orm'
 
 /**
@@ -191,10 +191,27 @@ export const profiles = pgTable('profiles', {
   updatedAt: pgCol.epochMs().notNull().default(nowMs),
 })
 
+/**
+ * 学期：日期 ↔ 教学周 的锚点。
+ * startDate 规整为第 1 周周一，totalWeeks 界定教学周范围；isCurrent 标记当前学期。
+ */
+export const terms = pgTable('terms', {
+  id: pgCol.id(),
+  name: pgCol.text().notNull(),
+  startDate: pgCol.text().notNull(),
+  endDate: pgCol.text().notNull(),
+  totalWeeks: pgCol.int().notNull().default(20),
+  isCurrent: boolean().notNull().default(false),
+  createdAt: pgCol.epochMs().notNull().default(nowMs),
+  updatedAt: pgCol.epochMs().notNull().default(nowMs),
+}, (t) => [
+  index('terms_start_idx').on(t.startDate),
+])
+
 /** 业务 schema 汇总（迁移与 parity 校验用） */
 export const pgSchema = {
   students, teachers, courses, classes, classMembers, schedules,
-  attendance, grades, orders, files, profiles,
+  attendance, grades, orders, files, profiles, terms,
 }
 
 /** 完整 schema（业务 + auth + license 内置表） */

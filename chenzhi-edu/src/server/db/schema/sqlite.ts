@@ -1,7 +1,7 @@
 import { sqliteCol, sqliteJson, sqliteTable } from '@homurajs/db/schema-helpers'
 import { sqliteAuthTables } from '@homurajs/auth/tables'
 import { sqliteLicenseTables } from '@homurajs/license/tables'
-import { index, uniqueIndex } from 'drizzle-orm/sqlite-core'
+import { index, integer, uniqueIndex } from 'drizzle-orm/sqlite-core'
 import { sql } from 'drizzle-orm'
 
 /**
@@ -185,10 +185,28 @@ export const profiles = sqliteTable('profiles', {
   updatedAt: sqliteCol.epochMs().notNull().default(nowMs),
 })
 
+/**
+ * 学期：日期 ↔ 教学周 的锚点。
+ * startDate 规整为第 1 周周一（startOfWeekMonday），totalWeeks 界定教学周范围。
+ * isCurrent 标记当前学期（全表至多一条 true，由 TermRepo 维护）。
+ */
+export const terms = sqliteTable('terms', {
+  id: sqliteCol.id(),
+  name: sqliteCol.text().notNull(),
+  startDate: sqliteCol.text().notNull(),
+  endDate: sqliteCol.text().notNull(),
+  totalWeeks: sqliteCol.int().notNull().default(20),
+  isCurrent: integer({ mode: 'boolean' }).notNull().default(false),
+  createdAt: sqliteCol.epochMs().notNull().default(nowMs),
+  updatedAt: sqliteCol.epochMs().notNull().default(nowMs),
+}, (t) => [
+  index('terms_start_idx').on(t.startDate),
+])
+
 /** 业务 schema 汇总 */
 export const sqliteSchema = {
   students, teachers, courses, classes, classMembers, schedules,
-  attendance, grades, orders, files, profiles,
+  attendance, grades, orders, files, profiles, terms,
 }
 
 /**

@@ -7,6 +7,7 @@ import { createAuth } from '../src/server/auth/index.js'
 import { createNodeAdapter } from '@homurajs/app-kit/serve'
 import { loadConfig } from '../src/server/env.js'
 import { createLogger } from '@homurajs/core'
+import { startOfWeekMonday, toISODate, parseDate } from '../src/shared/domain.js'
 
 /**
  * 种子脚本（npm run db:seed）：
@@ -51,6 +52,24 @@ if (existing[0]) {
   logger.info('管理员已创建', { adminId, username: adminUsername })
 }
 await profiles.upsertProfile(adminId, { role: 'admin', realName: adminNickname })
+
+// ---- 1.5 当前学期（日期↔教学周锚点；确保今天在学期内，课表缺省周次合理）----
+{
+  const existingTerm = await db.select().from(t.terms).limit(1)
+  if (!existingTerm[0]) {
+    // 学期起点 = 今天往前推 3 周的周一 → 今天落在第 4 周左右；总 20 周
+    const startMonday = startOfWeekMonday(toISODate(Date.now() - 21 * 86400_000))
+    const end = toISODate(parseDate(startMonday) + 20 * 7 * 86400_000 - 86400_000)
+    await svc.term.create({
+      name: '2026-2027 学年第一学期',
+      startDate: startMonday,
+      endDate: end,
+      totalWeeks: 20,
+      isCurrent: true,
+    })
+    logger.info('当前学期已创建', { startDate: startMonday, endDate: end, todayWeek: await svc.term.currentWeek() })
+  }
+}
 
 // ---- 2. 演示数据（仅当业务表为空时灌入，避免重复）----
 const existingCourses = await db.select().from(t.courses).limit(1)

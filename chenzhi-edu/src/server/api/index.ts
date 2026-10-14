@@ -14,6 +14,7 @@ import { orderRoutes } from './orders.js'
 import { fileRoutes } from './files.js'
 import { userRoutes } from './users.js'
 import { dashboardRoutes } from './dashboard.js'
+import { termRoutes } from './terms.js'
 
 /**
  * 业务 API 总路由（挂在 /api，位于 createApp 的 sessionMiddleware 之后）。
@@ -49,6 +50,7 @@ export function createApiRoutes(opts: {
   api.route('/orders', orderRoutes(svc))
   api.route('/files', fileRoutes(svc, storage, opts.ns))
   api.route('/users', userRoutes(svc, profiles)) // /api/users/me + /api/users 管理
+  api.route('/terms', termRoutes(svc))
 
   return api
 }

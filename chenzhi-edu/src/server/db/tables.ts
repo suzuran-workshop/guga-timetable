@@ -26,6 +26,7 @@ export interface TableRefs {
   orders: any
   files: any
   profiles: any
+  terms: any
   /** @homurajs/auth 的 users 表（身份锚点，库拥有），按方言选取 */
   authUsers: any
 }
@@ -49,6 +50,7 @@ export function initTables(b: DbBundle): TableRefs {
     orders: schema.orders,
     files: schema.files,
     profiles: schema.profiles,
+    terms: schema.terms,
     authUsers: authTables.users,
   }
   return refs

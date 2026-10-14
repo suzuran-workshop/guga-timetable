@@ -109,35 +109,27 @@ export class ScheduleRepo extends Repository {
   }
 
   /** 全校课表（周视图）：可按 week 过滤教学周段 */
-  async weekTimetable(week?: number, teacherId?: string): Promise<ScheduleDto[]> {
+  async weekTimetable(opts: { week?: number; teacherId?: string; classId?: string } = {}): Promise<ScheduleDto[]> {
     const t = this.t
     const conds: any[] = []
-    if (week) conds.push(and(lte(t.schedules.weekStart, week), gte(t.schedules.weekEnd, week)))
-    if (teacherId) conds.push(eq(t.classes.teacherId, teacherId))
+    if (opts.week) conds.push(and(lte(t.schedules.weekStart, opts.week), gte(t.schedules.weekEnd, opts.week)))
+    if (opts.teacherId) conds.push(eq(t.classes.teacherId, opts.teacherId))
+    if (opts.classId) conds.push(eq(t.schedules.classId, opts.classId))
     const where = conds.length ? and(...conds) : undefined
-    const rows = await (where
-      ? this.db.select({
-          id: t.schedules.id, classId: t.schedules.classId, weekday: t.schedules.weekday,
-          startPeriod: t.schedules.startPeriod, endPeriod: t.schedules.endPeriod,
-          weekStart: t.schedules.weekStart, weekEnd: t.schedules.weekEnd, room: t.schedules.room,
-          className: t.classes.name, courseName: t.courses.name, courseColor: t.courses.colorIndex,
-          teacherName: t.teachers.name,
-        }).from(t.schedules)
-          .leftJoin(t.classes, eq(t.schedules.classId, t.classes.id))
-          .leftJoin(t.courses, eq(t.classes.courseId, t.courses.id))
-          .leftJoin(t.teachers, eq(t.classes.teacherId, t.teachers.id))
-          .where(where)
-      : this.db.select({
-          id: t.schedules.id, classId: t.schedules.classId, weekday: t.schedules.weekday,
-          startPeriod: t.schedules.startPeriod, endPeriod: t.schedules.endPeriod,
-          weekStart: t.schedules.weekStart, weekEnd: t.schedules.weekEnd, room: t.schedules.room,
-          className: t.classes.name, courseName: t.courses.name, courseColor: t.courses.colorIndex,
-          teacherName: t.teachers.name,
-        }).from(t.schedules)
-          .leftJoin(t.classes, eq(t.schedules.classId, t.classes.id))
-          .leftJoin(t.courses, eq(t.classes.courseId, t.courses.id))
-          .leftJoin(t.teachers, eq(t.classes.teacherId, t.teachers.id))
-    ).orderBy(t.schedules.weekday, t.schedules.startPeriod)
+
+    const base = this.db.select({
+      id: t.schedules.id, classId: t.schedules.classId, weekday: t.schedules.weekday,
+      startPeriod: t.schedules.startPeriod, endPeriod: t.schedules.endPeriod,
+      weekStart: t.schedules.weekStart, weekEnd: t.schedules.weekEnd, room: t.schedules.room,
+      className: t.classes.name, courseName: t.courses.name, courseColor: t.courses.colorIndex,
+      teacherName: t.teachers.name,
+    }).from(t.schedules)
+      .leftJoin(t.classes, eq(t.schedules.classId, t.classes.id))
+      .leftJoin(t.courses, eq(t.classes.courseId, t.courses.id))
+      .leftJoin(t.teachers, eq(t.classes.teacherId, t.teachers.id))
+
+    const rows = await (where ? base.where(where) : base)
+      .orderBy(t.schedules.weekday, t.schedules.startPeriod)
     return rows.map((r: any) => this.toDto(r))
   }
 

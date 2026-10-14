@@ -8,6 +8,7 @@ import { AttendanceRepo } from './attendance.js'
 import { GradeRepo } from './grade.js'
 import { OrderRepo } from './order.js'
 import { FileRepo } from './file.js'
+import { TermRepo } from './term.js'
 import { DashboardService } from '../service/dashboard.js'
 
 /**
@@ -24,6 +25,7 @@ export class Services {
   readonly grade: GradeRepo
   readonly order: OrderRepo
   readonly file: FileRepo
+  readonly term: TermRepo
   readonly dashboard: DashboardService
 
   constructor(bundle: DbBundle) {
@@ -36,6 +38,7 @@ export class Services {
     this.grade = new GradeRepo(bundle)
     this.order = new OrderRepo(bundle)
     this.file = new FileRepo(bundle)
+    this.term = new TermRepo(bundle)
     this.dashboard = new DashboardService(this, bundle)
   }
 }

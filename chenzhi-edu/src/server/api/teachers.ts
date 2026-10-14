@@ -30,7 +30,7 @@ export function teacherRoutes(svc: Services): Hono {
   app.get('/:id/timetable', requirePerm('schedule:read'), async (c) => {
     const u = new URL(c.req.url)
     const week = u.searchParams.get('week') ? Number(u.searchParams.get('week')) : undefined
-    const items = await svc.schedule.weekTimetable(week, c.req.param('id'))
+    const items = await svc.schedule.weekTimetable({ week, teacherId: c.req.param('id') })
     return c.json({ items })
   })
 
