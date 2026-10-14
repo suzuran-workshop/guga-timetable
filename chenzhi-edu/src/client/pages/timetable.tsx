@@ -107,7 +107,7 @@ export function TimetablePage() {
         </div>
       )}
 
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden" data-testid="timetable-grid">
         {!ready ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <CalendarOff className="h-10 w-10 text-muted-foreground/40" />

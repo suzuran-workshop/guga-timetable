@@ -40,6 +40,60 @@ test.describe('排课增强', () => {
     await expect(page.getByText(/第 \d+ 周共 \d+ 节排课/)).toBeVisible()
   })
 
+  /**
+   * 教师/班级维度必须**真过滤**，不能只是「渲染了个网格」。
+   * 断言方式：UI 显示的节数 == API 按该维度过滤的节数，且与全校节数不同（证明过滤生效）。
+   * 再验网格每张卡片的教师名都是所选教师（防止过滤条件没传下去）。
+   */
+  test('课表：教师/班级维度按维度过滤（节数与 API 地面真相一致）', async ({ page }) => {
+    const get = (url: string) => page.request.get(url).then((r) => r.json())
+    const ctx = await get('/api/terms/context')
+    const week = ctx.currentWeek ?? 1
+
+    const globalItems = (await get(`/api/schedules?week=${week}`)).items
+    // 挑一个在该周排课最多的教师，保证过滤后有课可断言
+    const byTeacher = new Map<string, { name: string; n: number }>()
+    for (const s of globalItems) {
+      if (!s.teacherId) continue
+      const e = byTeacher.get(s.teacherId) ?? { name: s.teacherName, n: 0 }
+      e.n++; byTeacher.set(s.teacherId, e)
+    }
+    const [teacherId, picked] = [...byTeacher.entries()].sort((a, b) => b[1].n - a[1].n)[0]
+    expect(picked, '该周应有带教师的排课').toBeTruthy()
+
+    const teacherItems = (await get(`/api/schedules?week=${week}&teacherId=${teacherId}`)).items
+    // 前提：过滤确实减少了结果（全校含多位教师）
+    expect(teacherItems.length).toBeGreaterThan(0)
+    expect(teacherItems.length).toBeLessThan(globalItems.length)
+
+    await page.goto('/timetable')
+    await page.getByRole('tab', { name: '教师' }).click()
+    await page.getByRole('combobox').first().click()
+    await page.getByRole('option', { name: new RegExp(picked.name) }).first().click()
+    await page.waitForLoadState('networkidle')
+
+    // UI 计数 == API 该教师节数（不是全校节数）
+    await expect(page.getByText(`第 ${week} 周共 ${teacherItems.length} 节排课`)).toBeVisible()
+    // 每张课卡都含所选教师名（卡片 title 形如「课程 · 班级\n节次\n教室 教师」）
+    const cards = page.getByTestId('timetable-grid').locator('button[title]')
+    await expect(cards).toHaveCount(teacherItems.length)
+    for (const t of await cards.evaluateAll((els) => els.map((e) => e.getAttribute('title') ?? ''))) {
+      expect(t).toContain(picked.name)
+    }
+
+    // 班级维度同理：选一个班，节数应少于全校
+    const classId = globalItems[0].classId
+    const className = globalItems[0].className
+    const classItems = (await get(`/api/schedules?week=${week}&classId=${classId}`)).items
+    expect(classItems.length).toBeLessThan(globalItems.length)
+
+    await page.getByRole('tab', { name: '班级' }).click()
+    await page.getByRole('combobox').first().click()
+    await page.getByRole('option', { name: className }).first().click()
+    await page.waitForLoadState('networkidle')
+    await expect(page.getByText(`第 ${week} 周共 ${classItems.length} 节排课`)).toBeVisible()
+  })
+
   test('学期管理：设置页学期 tab 可见当前学期', async ({ page }) => {
     await page.goto('/settings')
     await page.getByRole('tab', { name: /学期管理/ }).click()
@@ -59,6 +113,34 @@ test.describe('排课增强', () => {
     await page.getByRole('button', { name: '创建' }).click()
     await expect(page.getByText('已创建')).toBeVisible()
     await expect(page.getByText(name)).toBeVisible()
+  })
+
+  /**
+   * 已有当前学期时，新建（如下学期计划）不得**静默劫持**时间锚点——
+   * 否则课表周次会立刻跳到未来周段，今天的日期解析出教学周范围外。
+   * 断言：建完新学期后 /api/terms/context 的 term.id 仍是原来那个。
+   */
+  test('学期管理：已有当前学期时新建不夺权', async ({ page }) => {
+    const get = (url: string) => page.request.get(url).then((r) => r.json())
+    const before = await get('/api/terms/context')
+    expect(before.term, '前置条件：应存在当前学期').toBeTruthy()
+
+    await page.goto('/settings')
+    await page.getByRole('tab', { name: /学期管理/ }).click()
+    await page.getByRole('button', { name: /新建学期/ }).click()
+    // 「设为当前学期」开关应默认**关闭**（已有当前学期）
+    const sw = page.getByLabel('设为当前学期').first()
+    await expect(sw).toHaveAttribute('aria-checked', 'false')
+
+    await page.getByLabel('学期名称').fill(`下学期计划${uniq()}`)
+    await page.getByLabel(/开始日期/).fill('2027-09-01')
+    await page.getByLabel('结束日期').fill('2028-01-20')
+    await page.getByRole('button', { name: '创建' }).click()
+    await expect(page.getByText('已创建')).toBeVisible()
+
+    const after = await get('/api/terms/context')
+    expect(after.term.id, '当前学期锚点不得被新建学期夺走').toBe(before.term.id)
+    expect(after.currentWeek, '教学周不得跳变').toBe(before.currentWeek)
   })
 
   test('调换课：单日课表加载 + 停课 + 恢复', async ({ page }) => {
