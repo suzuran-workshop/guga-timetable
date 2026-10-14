@@ -499,3 +499,93 @@ export interface ApiError {
   message?: string
   [k: string]: unknown
 }
+
+// ---------------------------------------------------------------------------
+// 学期（Term）：日期 ↔ 教学周 的映射地基
+// ---------------------------------------------------------------------------
+
+/**
+ * 学期 DTO。
+ * 排课的教学周段（weekStart~weekEnd）、考勤点名、调换课的「具体日期」都依赖
+ * 「某日期是本学期第几周第几天」——由 startDate 锚定，totalWeeks 界定范围。
+ */
+export interface TermDto {
+  id: string
+  name: string
+  startDate: string // YYYY-MM-DD（本学期第 1 周周一）
+  endDate: string   // YYYY-MM-DD
+  totalWeeks: number
+  isCurrent: boolean
+  createdAt: number
+}
+
+export const termSchema = z.object({
+  name: z.string().trim().min(1, '学期名称不能为空').max(60),
+  startDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, '开始日期格式应为 YYYY-MM-DD'),
+  endDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, '结束日期格式应为 YYYY-MM-DD'),
+  totalWeeks: z.number().int().min(1).max(40).default(20),
+  isCurrent: z.boolean().default(false),
+})
+export type TermInput = z.infer<typeof termSchema>
+
+// ---- 日期 ↔ 教学周 纯函数（前后端同源，无副作用，可单测）----
+
+const MS_PER_DAY = 86400_000
+
+/** 'YYYY-MM-DD' → 该日 00:00 本地时间戳（避免时区把日期算偏） */
+export function parseDate(iso: string): number {
+  const [y, m, d] = iso.split('-').map(Number)
+  return new Date(y, (m ?? 1) - 1, d ?? 1).getTime()
+}
+
+/** 时间戳/Date → 'YYYY-MM-DD'（本地时区） */
+export function toISODate(ms: number | Date): string {
+  const d = typeof ms === 'number' ? new Date(ms) : ms
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+/** JS getDay()（0=周日）→ 教学 weekday（1=周一…7=周日） */
+export function jsDayToWeekday(jsDay: number): number {
+  return jsDay === 0 ? 7 : jsDay
+}
+
+/**
+ * 把日期规整到「所在周的周一」。
+ *
+ * 学期 startDate 的不变量：必须是某周周一（第 1 周周一）。weekOfDate/dateOfWeekday
+ * 都以 termStart 为周锚点，若 termStart 不是周一，日期↔教学周 往返会错位一天。
+ * 故 TermRepo 建/改学期时统一 normalize，杜绝管理员误选非周一导致的错位。
+ */
+export function startOfWeekMonday(iso: string): string {
+  const t = parseDate(iso)
+  const wd = jsDayToWeekday(new Date(t).getDay()) // 1=周一…7=周日
+  return toISODate(t - (wd - 1) * MS_PER_DAY)
+}
+
+/** 某日期在学期中的「教学周」（1-based）；不在学期范围返回 null */
+export function weekOfDate(iso: string, termStart: string, totalWeeks: number): number | null {
+  const diffDays = Math.round((parseDate(iso) - parseDate(termStart)) / MS_PER_DAY)
+  if (diffDays < 0) return null
+  const week = Math.floor(diffDays / 7) + 1
+  return week > totalWeeks ? null : week
+}
+
+/** 某日期在学期中的 weekday（1=周一…7=周日） */
+export function weekdayOfDate(iso: string): number {
+  return jsDayToWeekday(new Date(parseDate(iso)).getDay())
+}
+
+/**
+ * 教学周 + weekday → 具体日期。
+ * week 1-based，weekday 1=周一…7=周日。termStart 视为第 1 周周一。
+ */
+export function dateOfWeekday(termStart: string, week: number, weekday: number): string {
+  const offsetDays = (week - 1) * 7 + (weekday - 1)
+  return toISODate(parseDate(termStart) + offsetDays * MS_PER_DAY)
+}
+
+/** 某教学周的周一日期（termStart 视为第 1 周周一） */
+export function weekStartDate(termStart: string, week: number): string {
+  return toISODate(parseDate(termStart) + (week - 1) * 7 * MS_PER_DAY)
+}
+
