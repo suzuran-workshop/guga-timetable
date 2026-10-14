@@ -100,7 +100,7 @@ export class OrderRepo extends Repository {
         .where(eq(t.students.id, cur[0].studentId))
     } else if (!nowPaid && wasPaid) {
       await this.db.update(t.students)
-        .set({ balanceLessons: sql`MAX(0, ${t.students.balanceLessons} - ${cur[0].lessonsPurchased})`, updatedAt: this.now() })
+        .set({ balanceLessons: this.floorAt(t.students.balanceLessons, -cur[0].lessonsPurchased), updatedAt: this.now() })
         .where(eq(t.students.id, cur[0].studentId))
     }
     return this.getById(id)

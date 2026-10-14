@@ -82,12 +82,12 @@ test.describe('教务业务流', () => {
     // 显式选择一个有种子的班级（避免自动选中前序测试新建的空班级）
     await page.getByLabel('班级').click()
     await page.getByRole('option', { name: '数学冲刺1班' }).click()
-    // 用唯一上课日期，保证点名册从空白开始（跨重跑幂等）
-    const lessonDate = `2030-01-${String(10 + (Date.now() % 18)).padStart(2, '0')}`
+    // 用唯一上课日期，减少与历史点名的碰撞（DB 跨重跑持久，种子幂等不重置）
+    const lessonDate = `2030-02-${String(1 + (Date.now() % 26)).padStart(2, '0')}`
     await page.getByLabel('上课日期').fill(lessonDate)
-    // 节次自动选首项，点名册应加载出学员
-    await expect(page.getByText(/已标记 0/)).toBeVisible({ timeout: 10_000 })
-    // 全部出勤
+    // 点名册应加载出学员（「已标记 N/M」出现即 roster 就绪；N 可能非 0，若该日期历史已点名）
+    await expect(page.getByText(/已标记 \d+\/\d+/)).toBeVisible({ timeout: 10_000 })
+    // 全部出勤（无论初始状态，强制置 present）
     await page.getByRole('button', { name: '全部出勤' }).click()
     await expect(page.getByRole('button', { name: /保存点名/ })).toBeEnabled()
     await page.getByRole('button', { name: /保存点名/ }).click()

@@ -69,7 +69,7 @@ export class AttendanceRepo extends Repository {
         // 课时差回滚：新消耗 - 旧消耗
         const delta = consume - oldConsume
         if (delta !== 0) await this.db.update(t.students)
-          .set({ balanceLessons: sql`MAX(0, ${t.students.balanceLessons} - ${delta})`, updatedAt: this.now() })
+          .set({ balanceLessons: this.floorAt(t.students.balanceLessons, -delta), updatedAt: this.now() })
           .where(eq(t.students.id, m.studentId))
         results.push({ studentId: m.studentId, action: 'updated' })
       } else {
@@ -78,7 +78,7 @@ export class AttendanceRepo extends Repository {
           consumedLessons: consume, remark: m.remark, markedBy, createdAt: this.now(), updatedAt: this.now(),
         })
         if (consume > 0) await this.db.update(t.students)
-          .set({ balanceLessons: sql`MAX(0, ${t.students.balanceLessons} - ${consume})`, updatedAt: this.now() })
+          .set({ balanceLessons: this.floorAt(t.students.balanceLessons, -consume), updatedAt: this.now() })
           .where(eq(t.students.id, m.studentId))
         results.push({ studentId: m.studentId, action: 'created' })
       }

@@ -1,5 +1,6 @@
+import { sql } from 'drizzle-orm'
 import type { DbBundle } from '../db/index.js'
-import { tables } from '../db/tables.js'
+import { tables, dialect } from '../db/tables.js'
 
 /**
  * 仓储基类——把双方言 db 实例收口成 `any`，业务 repo 面对统一查询接口。
@@ -21,6 +22,18 @@ export class Repository {
   /** epoch ms now */
   protected now(): number {
     return Date.now()
+  }
+
+  /**
+   * 方言安全的「取大」表达式：`max(col, 0)` 用于课时余额 floor 0。
+   *
+   * ⚠ sqlite 的 MAX 是标量函数（`MAX(0, x)`），pg 的 MAX 是聚合、标量取大是 GREATEST。
+   * 按运行时 dialect 选函数名，避免切 pg 形态时把 MAX 误当聚合。
+   */
+  protected floorAt(col: any, value: number) {
+    return dialect() === 'pg'
+      ? sql`GREATEST(0, ${col} + ${value})`
+      : sql`MAX(0, ${col} + ${value})`
   }
 }
 

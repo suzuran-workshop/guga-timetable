@@ -104,7 +104,7 @@ export class StudentRepo extends Repository {
   async adjustBalance(id: string, delta: number): Promise<number> {
     const t = this.t
     const rows = await this.db.update(t.students)
-      .set({ balanceLessons: sql`MAX(0, ${t.students.balanceLessons} + ${delta})`, updatedAt: this.now() })
+      .set({ balanceLessons: this.floorAt(t.students.balanceLessons, delta), updatedAt: this.now() })
       .where(eq(t.students.id, id)).returning()
     return Number(rows[0]?.balanceLessons ?? 0)
   }
