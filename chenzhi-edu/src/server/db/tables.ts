@@ -24,6 +24,7 @@ export interface TableRefs {
   grades: any
   orders: any
   files: any
+  profiles: any
 }
 
 let refs: TableRefs | null = null
@@ -43,6 +44,7 @@ export function initTables(b: DbBundle): TableRefs {
     grades: schema.grades,
     orders: schema.orders,
     files: schema.files,
+    profiles: schema.profiles,
   }
   return refs
 }

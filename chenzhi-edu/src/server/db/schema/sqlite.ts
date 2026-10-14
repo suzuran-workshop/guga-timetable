@@ -171,10 +171,24 @@ export const files = sqliteTable('files', {
   createdAt: sqliteCol.epochMs().notNull().default(nowMs),
 })
 
+/**
+ * 用户档案扩展：auth 的 users 表由库拥有（无 role 列），
+ * 本表以 userId 为外键补充教务系统的 RBAC 角色与展示信息。
+ */
+export const profiles = sqliteTable('profiles', {
+  userId: sqliteCol.text('user_id').primaryKey(),
+  role: sqliteCol.text().notNull().default('viewer'),
+  realName: sqliteCol.text(),
+  phone: sqliteCol.text(),
+  teacherId: sqliteCol.text(),
+  createdAt: sqliteCol.epochMs().notNull().default(nowMs),
+  updatedAt: sqliteCol.epochMs().notNull().default(nowMs),
+})
+
 /** 业务 schema 汇总 */
 export const sqliteSchema = {
   students, teachers, courses, classes, classMembers, schedules,
-  attendance, grades, orders, files,
+  attendance, grades, orders, files, profiles,
 }
 
 /**

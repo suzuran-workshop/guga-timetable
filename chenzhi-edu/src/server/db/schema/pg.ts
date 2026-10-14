@@ -177,10 +177,24 @@ export const files = pgTable('files', {
   createdAt: pgCol.epochMs().notNull().default(nowMs),
 })
 
+/**
+ * 用户档案扩展：auth 的 users 表由库拥有（无 role 列），
+ * 本表以 userId 为外键补充教务系统的 RBAC 角色与展示信息。
+ */
+export const profiles = pgTable('profiles', {
+  userId: pgCol.text('user_id').primaryKey(),
+  role: pgCol.text().notNull().default('viewer'),
+  realName: pgCol.text(),
+  phone: pgCol.text(),
+  teacherId: pgCol.text(),
+  createdAt: pgCol.epochMs().notNull().default(nowMs),
+  updatedAt: pgCol.epochMs().notNull().default(nowMs),
+})
+
 /** 业务 schema 汇总（迁移与 parity 校验用） */
 export const pgSchema = {
   students, teachers, courses, classes, classMembers, schedules,
-  attendance, grades, orders, files,
+  attendance, grades, orders, files, profiles,
 }
 
 /** 完整 schema（业务 + auth + license 内置表） */
