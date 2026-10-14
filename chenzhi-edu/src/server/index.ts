@@ -134,6 +134,7 @@ async function main() {
   // 优雅关闭
   const shutdown = () => {
     logger.info('收到退出信号，正在关闭…')
+    if (license?.retryTimer) clearInterval(license.retryTimer)
     license?.client.stop()
     process.exit(0)
   }

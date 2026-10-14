@@ -18,6 +18,8 @@ export interface LicenseBundle {
   guard: ReturnType<typeof licenseGuard>
   requireFeature: (feature: string) => ReturnType<typeof requireFeature>
   statusPath: string
+  /** 注册失败时的后台重试定时器（成功或关闭时清理）；已注册则为 null */
+  retryTimer: NodeJS.Timeout | null
 }
 
 export async function createLicense(opts: {
@@ -47,22 +49,55 @@ export async function createLicense(opts: {
     onInvalidSignature: 'suspend', // 验签失败一律停服（生产安全缺省）
   })
 
-  // 注册（网络失败 fail-open：进 unknown/grace，心跳恢复后转 active）
+  // 注册（网络失败 fail-open：不阻断启动，后台重试；授权中心起来后自动激活）
+  let registered = false
   try {
     const reg = await client.register()
+    registered = true
     logger.info('授权注册成功', { licenseId: reg.licenseId, status: reg.status, signature: client.getSignatureState().kind })
   } catch (e: any) {
-    logger.warn('授权注册失败，进入宽限期（fail-open）', { error: e.message, server: opts.server })
+    logger.warn('授权注册失败，fail-open 运行（后台每 15s 重试；授权中心可用后自动激活）', { error: e.message, server: opts.server })
   }
 
-  // 心跳循环（网络失败走宽限期，不抛错）
-  client.startHeartbeat({
-    onError: (e) => logger.warn('授权心跳失败', { error: e.message }),
-  })
+  // 心跳循环：仅在 register 成功后启动（LicenseClient 要求先 register 再 startHeartbeat，否则抛错）。
+  // 注册失败时不启动心跳——client 状态为 unknown，licenseGuard 在 strict=false 下 fail-open 放行。
+  if (registered) {
+    client.startHeartbeat({
+      onError: (e) => logger.warn('授权心跳失败', { error: e.message }),
+    })
+  }
 
   const bypass = createDefaultBypass({ healthzPath: opts.healthzPath })
   const guard = licenseGuard(client, { bypass, healthzPath: opts.healthzPath })
   const feature = (name: string) => requireFeature(client, name)
 
-  return { client, guard, requireFeature: feature, statusPath: LICENSE_STATUS_PATH }
+  return {
+    client,
+    guard,
+    requireFeature: feature,
+    statusPath: LICENSE_STATUS_PATH,
+    // 未注册成功时，后台周期性重试 register；成功后启动心跳。供 server 在关闭时清理。
+    retryTimer: registered ? null : startRegisterRetry(client, logger),
+  }
+}
+
+/**
+ * 注册重试循环：授权中心暂不可达时（如忘开 genuine-mock），每 15s 重试一次 register，
+ * 成功后启动心跳并停止重试。让「先起业务服务、后起授权中心」也能自动激活，无需重启。
+ */
+function startRegisterRetry(client: LicenseClient, logger: ReturnType<typeof createLogger>): NodeJS.Timeout {
+  const RETRY_MS = 15_000
+  const timer = setInterval(async () => {
+    try {
+      const reg = await client.register()
+      client.startHeartbeat({ onError: (e) => logger.warn('授权心跳失败', { error: e.message }) })
+      logger.info('授权注册重试成功，已激活并启动心跳', { licenseId: reg.licenseId, status: reg.status })
+      clearInterval(timer)
+    } catch {
+      // 仍不可达，静默等待下一轮（已有启动期 warn，不重复刷屏）
+    }
+  }, RETRY_MS)
+  // 不阻止进程退出
+  timer.unref?.()
+  return timer
 }
