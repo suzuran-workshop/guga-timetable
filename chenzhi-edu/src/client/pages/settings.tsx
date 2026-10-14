@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { Shield, Users, Info, RefreshCw, CheckCircle2, KeyRound, Crown } from 'lucide-react'
+import { Shield, Users, Info, RefreshCw, CheckCircle2, KeyRound, Crown, CalendarDays, Plus, Trash2, Star } from 'lucide-react'
 import { toast } from 'sonner'
 import { api, toastError } from '../lib/api.js'
 import { useApi } from '../hooks/use-api.js'
 import { useAppStore } from '../store/app.js'
 import { PageHeader } from '../components/page-header.js'
 import { DataTable, type Column } from '../components/data-table.js'
+import { ConfirmDialog } from '../components/confirm-dialog.js'
+import { FormDialog, type FieldSpec } from '../components/form-dialog.js'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card.js'
 import { Badge } from '../components/ui/badge.js'
 import { Button } from '../components/ui/button.js'
@@ -15,7 +17,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '../components/ui/select.js'
 import { formatDateTime, formatDate } from '../lib/utils.js'
-import { ROLE_LABEL, Role, type LicenseStateDto } from '../../shared/domain.js'
+import { ROLE_LABEL, Role, termSchema, type LicenseStateDto, type TermDto } from '../../shared/domain.js'
 
 /** /api/users 列表行 */
 interface UserRow {
@@ -36,13 +38,17 @@ interface UserRow {
 export function SettingsPage() {
   return (
     <div>
-      <PageHeader title="系统设置" description="用户角色、授权状态与系统信息" />
-      <Tabs defaultValue="users">
+      <PageHeader title="系统设置" description="学期、用户角色、授权状态与系统信息" />
+      <Tabs defaultValue="terms">
         <TabsList>
+          <TabsTrigger value="terms"><CalendarDays className="mr-1.5 h-4 w-4" />学期管理</TabsTrigger>
           <TabsTrigger value="users"><Users className="mr-1.5 h-4 w-4" />用户与角色</TabsTrigger>
           <TabsTrigger value="license"><KeyRound className="mr-1.5 h-4 w-4" />授权信息</TabsTrigger>
           <TabsTrigger value="about"><Info className="mr-1.5 h-4 w-4" />关于系统</TabsTrigger>
         </TabsList>
+        <TabsContent value="terms" className="mt-4">
+          <TermsTab />
+        </TabsContent>
         <TabsContent value="users" className="mt-4">
           <UsersTab />
         </TabsContent>
@@ -53,6 +59,96 @@ export function SettingsPage() {
           <AboutTab />
         </TabsContent>
       </Tabs>
+    </div>
+  )
+}
+
+/** 学期管理（仅 admin）：建学期、设为当前、删除。日期↔教学周的锚点。 */
+function TermsTab() {
+  const user = useAppStore((s) => s.user)
+  const isAdmin = user?.role === 'admin'
+  const { data, loading, reload } = useApi<{ items: TermDto[] }>('/api/terms', { silent: !isAdmin })
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editing, setEditing] = useState<TermDto | null>(null)
+  const [deleting, setDeleting] = useState<TermDto | null>(null)
+
+  if (!isAdmin) {
+    return (
+      <Card><CardContent className="flex flex-col items-center gap-2 py-16 text-center">
+        <Shield className="h-8 w-8 text-muted-foreground/40" />
+        <p className="text-sm text-muted-foreground">仅管理员可访问学期管理</p>
+      </CardContent></Card>
+    )
+  }
+
+  const setCurrent = async (id: string) => {
+    try {
+      await api.post(`/api/terms/${id}/current`)
+      toast.success('已设为当前学期')
+      reload()
+    } catch (e) { toastError(e) }
+  }
+
+  const handleDelete = async () => {
+    if (!deleting) return
+    try {
+      await api.del(`/api/terms/${deleting.id}`)
+      toast.success('已删除学期')
+      setDeleting(null); reload()
+    } catch (e) { toastError(e) }
+  }
+
+  const fields: FieldSpec[] = [
+    { name: 'name', label: '学期名称', type: 'text', required: true, colSpan: 2, placeholder: '如 2026-2027 学年第一学期' },
+    { name: 'startDate', label: '开始日期（第1周周一）', type: 'date', required: true, hint: '非周一会自动规整到所在周周一' },
+    { name: 'endDate', label: '结束日期', type: 'date', required: true },
+    { name: 'totalWeeks', label: '总周数', type: 'number', min: 1, max: 40 },
+    { name: 'isCurrent', label: '设为当前学期', type: 'switch' },
+  ]
+
+  const columns: Column<TermDto>[] = [
+    {
+      key: 'name', header: '学期',
+      cell: (t) => (
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{t.name}</span>
+          {t.isCurrent && <Badge className="gap-1"><Star className="h-3 w-3" />当前</Badge>}
+        </div>
+      ),
+    },
+    { key: 'range', header: '起止', cell: (t) => <span className="text-sm tabular-nums">{t.startDate} ~ {t.endDate}</span> },
+    { key: 'weeks', header: '总周数', cell: (t) => <span className="text-sm tabular-nums">{t.totalWeeks} 周</span> },
+    {
+      key: 'actions', header: '', className: 'w-40 text-right',
+      cell: (t) => (
+        <div className="flex justify-end gap-1">
+          {!t.isCurrent && <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs" onClick={(e) => { e.stopPropagation(); setCurrent(t.id) }}><Star className="h-3.5 w-3.5" />设为当前</Button>}
+          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={(e) => { e.stopPropagation(); setDeleting(t) }}><Trash2 className="h-4 w-4" /></Button>
+        </div>
+      ),
+    },
+  ]
+
+  return (
+    <div>
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">学期是「日期 ↔ 教学周」的锚点，课表周次与调换课都依赖当前学期。</p>
+        <Button size="sm" onClick={() => { setEditing(null); setDialogOpen(true) }}><Plus className="mr-1.5 h-4 w-4" />新建学期</Button>
+      </div>
+      <DataTable columns={columns} rows={data?.items ?? []} rowKey={(t) => t.id} loading={loading} empty="暂无学期，点击「新建学期」" />
+
+      <FormDialog
+        open={dialogOpen} onOpenChange={setDialogOpen}
+        title={editing ? '编辑学期' : '新建学期'} fields={fields} schema={termSchema as any}
+        defaultValues={editing ? { ...editing, isCurrent: editing.isCurrent } : { totalWeeks: 20, isCurrent: true, startDate: '', endDate: '' }}
+        endpoint="/api/terms" editId={editing?.id ?? null}
+        onSaved={() => { setDialogOpen(false); reload() }}
+        transform={(v) => ({ ...v, totalWeeks: Number(v.totalWeeks) || 20, isCurrent: !!v.isCurrent })}
+        width="max-w-lg"
+      />
+      <ConfirmDialog open={!!deleting} onOpenChange={(v) => !v && setDeleting(null)} title="删除学期"
+        description={`确定删除「${deleting?.name}」吗？已有排课不受影响，但日期↔教学周解析会失去该学期锚点。`}
+        confirmText="删除" destructive onConfirm={handleDelete} />
     </div>
   )
 }

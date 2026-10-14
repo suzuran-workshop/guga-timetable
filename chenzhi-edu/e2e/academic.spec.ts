@@ -97,8 +97,14 @@ test.describe('教务业务流', () => {
   test('课表周视图：网格渲染 + 排课卡片', async ({ page }) => {
     await page.goto('/timetable')
     await expect(page.getByRole('heading', { name: '课表' })).toBeVisible()
-    // 周次切换器存在
-    await expect(page.getByText(/第 \d+ 周/)).toBeVisible()
+    // 学期上下文：页头描述含学期名与总周数
+    await expect(page.getByText(/共 \d+ 周/)).toBeVisible()
+    // 周次切换器（「第 N 周（本周）」）——用更具体的文本避免与页脚计数撞车
+    await expect(page.getByText(/第 \d+ 周（本周）/)).toBeVisible()
+    // 维度切换器存在
+    await expect(page.getByRole('tab', { name: '全校' })).toBeVisible()
+    await expect(page.getByRole('tab', { name: '教师' })).toBeVisible()
+    await expect(page.getByRole('tab', { name: '班级' })).toBeVisible()
     // 表头星期列渲染
     await expect(page.getByText('周一').first()).toBeVisible()
     await expect(page.getByText('周日').first()).toBeVisible()
