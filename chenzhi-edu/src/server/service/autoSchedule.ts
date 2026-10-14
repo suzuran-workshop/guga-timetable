@@ -71,8 +71,12 @@ export class AutoScheduleService {
         slots.push({ weekday: wd, startPeriod: start, endPeriod: end })
       }
     }
-    // 排序：优先工作日早段（更符合排课习惯），保证结果稳定可复现
-    slots.sort((a, b) => a.weekday - b.weekday || a.startPeriod - b.startPeriod)
+    // 排序：**节次优先，再按星期**（period-major）。
+    // 这样同一班级的多次课会优先落在「不同星期的同一时段」（如周一P1-2 + 周三P1-2），
+    // 而非挤在同一天——符合教务「每周课次分散到不同天」的排课习惯。
+    // 同班冲突约束保证同一天同一时段不会重复，故 period-major 天然把同班课次推向不同天。
+    // 结果对输入顺序稳定、可复现。
+    slots.sort((a, b) => a.startPeriod - b.startPeriod || a.weekday - b.weekday)
     return slots
   }
 

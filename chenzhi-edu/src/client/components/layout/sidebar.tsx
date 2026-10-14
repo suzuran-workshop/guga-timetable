@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Users, GraduationCap, BookOpen, Layers, CalendarDays,
-  ClipboardCheck, Award, Receipt, FolderOpen, Settings, School,
+  ClipboardCheck, Award, Receipt, FolderOpen, Settings, School, ArrowLeftRight, Sparkles,
 } from 'lucide-react'
 import { cn } from '../../lib/utils.js'
 import { useAppStore } from '../../store/app.js'
@@ -20,6 +20,8 @@ interface NavItem {
 const NAV: NavItem[] = [
   { to: '/', label: '工作台', icon: LayoutDashboard, perm: 'dashboard:read', group: '概览' },
   { to: '/timetable', label: '课表', icon: CalendarDays, perm: 'schedule:read', group: '教学' },
+  { to: '/schedule-adjust', label: '调换课', icon: ArrowLeftRight, perm: 'schedule:read', group: '教学' },
+  { to: '/auto-schedule', label: '自动派课', icon: Sparkles, perm: 'schedule:write', group: '教学' },
   { to: '/classes', label: '班级管理', icon: Layers, perm: 'class:read', group: '教学' },
   { to: '/courses', label: '课程管理', icon: BookOpen, perm: 'course:read', group: '教学' },
   { to: '/attendance', label: '考勤点名', icon: ClipboardCheck, perm: 'attendance:read', group: '教学' },

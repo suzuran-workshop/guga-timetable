@@ -11,6 +11,8 @@ import { CoursesPage } from './pages/courses.js'
 import { ClassesPage } from './pages/classes.js'
 import { ClassDetailPage } from './pages/class-detail.js'
 import { TimetablePage } from './pages/timetable.js'
+import { ScheduleAdjustPage } from './pages/schedule-adjust.js'
+import { AutoSchedulePage } from './pages/auto-schedule.js'
 import { AttendancePage } from './pages/attendance.js'
 import { GradesPage } from './pages/grades.js'
 import { OrdersPage } from './pages/orders.js'
@@ -75,6 +77,8 @@ export function App() {
           <Route path="/classes" element={<ClassesPage />} />
           <Route path="/classes/:id" element={<ClassDetailPage />} />
           <Route path="/timetable" element={<TimetablePage />} />
+          <Route path="/schedule-adjust" element={<ScheduleAdjustPage />} />
+          <Route path="/auto-schedule" element={<AutoSchedulePage />} />
           <Route path="/attendance" element={<AttendancePage />} />
           <Route path="/grades" element={<GradesPage />} />
           <Route path="/orders" element={<OrdersPage />} />
