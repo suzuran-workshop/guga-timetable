@@ -1,27 +1,15 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": ["ES2022"],
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "jsx": "react-jsx",
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "noEmit": true,
-    "types": ["node", "vite/client"],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./apps/web/src/*"],
-      "@guga/shared": ["./packages/shared/src"],
-      "@server/*": ["./apps/server/src/*"]
-    }
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true
   },
-  "include": ["apps/web/src", "packages/shared/src", "vite.config.ts"],
-  "exclude": ["apps/server"]
+  "include": ["packages/shared/src"]
 }
