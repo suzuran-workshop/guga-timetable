@@ -31,8 +31,8 @@ import {
 
 const PORT = Number(process.env.MOCK_PORT ?? 8790)
 const HOST = process.env.MOCK_HOST ?? '127.0.0.1'
-const PRODUCT_ID = process.env.GENUINE_PRODUCT_ID ?? 'chenzhi-edu'
-const APP_ID = process.env.GENUINE_APP_ID ?? 'chenzhi-edu-app'
+const PRODUCT_ID = process.env.GENUINE_PRODUCT_ID ?? 'guga-timetable'
+const APP_ID = process.env.GENUINE_APP_ID ?? 'guga-timetable-app'
 
 const STATUS = (process.env.MOCK_STATUS ?? 'active') as LicenseEntitlement['status']
 const ENFORCEMENT = (process.env.MOCK_ENFORCEMENT ?? 'notice') as LicenseEntitlement['enforcement']

@@ -1,4 +1,4 @@
-# ARCHITECTURE — 辰知教务
+# ARCHITECTURE — Guga 课务
 
 ## 系统概述
 

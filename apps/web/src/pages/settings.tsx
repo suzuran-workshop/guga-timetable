@@ -348,7 +348,7 @@ function LicenseCard({
 function AboutTab() {
   const user = useAppStore((s) => s.user)
   const rows: [string, React.ReactNode][] = [
-    ['系统名称', <span className="font-medium">辰知教务 · Academic Suite</span>],
+    ['系统名称', <span className="font-medium">Guga 课务 · Academic Suite</span>],
     ['版本', <span className="font-mono tabular-nums">0.1.0</span>],
     ['当前用户', <span>{user?.nickname || user?.username || '—'}（{user ? ROLE_LABEL[user.role] : '—'}）</span>],
     ['权限点数量', <span className="tabular-nums">{user?.permissions.length ?? 0} 项</span>],
@@ -374,7 +374,7 @@ function AboutTab() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <Info className="h-4 w-4 text-primary" />关于辰知教务
+          <Info className="h-4 w-4 text-primary" />关于Guga 课务
         </CardTitle>
       </CardHeader>
       <CardContent>

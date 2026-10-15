@@ -46,7 +46,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           <School className="h-5 w-5" />
         </div>
         <div className="leading-tight">
-          <div className="text-[15px] font-bold tracking-tight">辰知教务</div>
+          <div className="text-[15px] font-bold tracking-tight">Guga 课务</div>
           <div className="text-[11px] text-muted-foreground">Academic Suite</div>
         </div>
       </div>

@@ -49,7 +49,7 @@ test.describe('权限与存储', () => {
     await page.locator('input[type="file"]').setInputFiles({
       name: fileName,
       mimeType: 'text/plain',
-      buffer: Buffer.from('辰知教务 E2E 上传测试内容\n'),
+      buffer: Buffer.from('Guga 课务 E2E 上传测试内容\n'),
     })
     await expect(page.getByText(`已上传「${fileName}」`)).toBeVisible()
 
@@ -62,7 +62,7 @@ test.describe('权限与存储', () => {
     expect(uploaded).toBeTruthy()
     const dlRes = await page.request.get(`/files/${uploaded.objectKey}`)
     expect(dlRes.ok()).toBeTruthy()
-    expect(await dlRes.text()).toContain('辰知教务 E2E 上传测试内容')
+    expect(await dlRes.text()).toContain('Guga 课务 E2E 上传测试内容')
 
     // 删除
     const delRes = await page.request.delete(`/api/files/${uploaded.id}`)

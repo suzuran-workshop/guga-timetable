@@ -1,7 +1,7 @@
 /**
  * 共享领域契约（client + server 同源）。
  *
- * 辰知教务的核心域：学员 / 教师 / 课程 / 班级 / 排课 / 考勤 / 成绩 / 收费订单。
+ * Guga 课务的核心域：学员 / 教师 / 课程 / 班级 / 排课 / 考勤 / 成绩 / 收费订单。
  * 枚举、DTO、zod 校验规则集中在此，避免前后端各写一份而漂移。
  */
 import { z } from 'zod'
@@ -95,7 +95,7 @@ export const WEEKDAY_LABEL: Record<number, string> = {
 // ---------------------------------------------------------------------------
 
 /**
- * 角色（落 users.role）。辰知教务典型岗位：
+ * 角色（落 users.role）。Guga 课务典型岗位：
  * admin 超级管理员 / academic 教务 / teacher 教师 / finance 财务 / viewer 只读
  */
 export const Role = ['admin', 'academic', 'teacher', 'finance', 'viewer'] as const

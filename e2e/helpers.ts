@@ -4,7 +4,7 @@ import { expect, type Page } from '@playwright/test'
  * E2E 共享工具（无 test 注册，供各 spec 导入）。
  */
 
-export const ADMIN = { username: 'admin', password: 'chenzhi@2025' }
+export const ADMIN = { username: 'admin', password: 'guga@2025' }
 
 /** 通过 UI 以管理员登录。调用后 page 停在首页，cookie 已写入 context。 */
 export async function loginAsAdmin(page: Page) {

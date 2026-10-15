@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs.
 
 /**
  * 登录页：密码登录 / 注册双 Tab（@homurajs/auth 的 password provider）。
- * 演示账号提示：admin / chenzhi@2025（种子脚本创建）。
+ * 演示账号提示：admin / guga@2025（种子脚本创建）。
  */
 export function LoginPage() {
   const navigate = useNavigate()
@@ -19,7 +19,7 @@ export function LoginPage() {
   const [tab, setTab] = useState<'login' | 'register'>('login')
   const [busy, setBusy] = useState(false)
 
-  const [loginForm, setLoginForm] = useState({ username: 'admin', password: 'chenzhi@2025' })
+  const [loginForm, setLoginForm] = useState({ username: 'admin', password: 'guga@2025' })
   const [regForm, setRegForm] = useState({ username: '', password: '', nickname: '' })
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -59,7 +59,7 @@ export function LoginPage() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
             <School className="h-9 w-9" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">辰知教务</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Guga 课务</h1>
           <p className="mt-1 text-sm text-muted-foreground">教务管理系统 · Academic Suite</p>
         </div>
 
@@ -158,7 +158,7 @@ export function LoginPage() {
         <div className="mt-6 space-y-2 text-center">
           <div className="rounded-lg border border-dashed border-border bg-background/60 p-3">
             <p className="text-xs text-muted-foreground">
-              演示账号：<span className="font-mono font-medium text-foreground">admin</span> / <span className="font-mono font-medium text-foreground">chenzhi@2025</span>
+              演示账号：<span className="font-mono font-medium text-foreground">admin</span> / <span className="font-mono font-medium text-foreground">guga@2025</span>
             </p>
           </div>
           {license && (

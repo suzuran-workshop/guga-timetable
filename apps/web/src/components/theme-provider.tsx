@@ -12,7 +12,7 @@ export function AppThemeProvider({ children }: { children: ReactNode }) {
       defaultTheme="system"
       enableSystem
       disableTransitionOnChange
-      storageKey="chenzhi-theme"
+      storageKey="guga-theme"
     >
       {children}
     </ThemeProvider>

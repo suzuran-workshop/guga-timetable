@@ -1,6 +1,6 @@
-# 辰知教务（Chenzhi Edu）
+# Guga 课务（Guga Timetable）
 
-> 基于 [@homurajs](https://www.npmjs.com/org/homurajs) 全家桶构建的教务管理系统（Academic Affairs Management System），UI/UX 采用 Vite 8 + React 19 + shadcn/ui（Tailwind v3）。本项目是对知名课务软件「辰知教务」的致敬式复刻与再实现。
+> 基于 [@homurajs](https://www.npmjs.com/org/homurajs) 全家桶构建的教务管理系统（Academic Affairs Management System），UI/UX 采用 Vite 8 + React 19 + shadcn/ui（Tailwind v3）。本项目是对知名课务软件「Guga 课务」的致敬式复刻与再实现。
 
 ## 这是什么？
 
@@ -11,7 +11,7 @@
 ## 为什么存在？
 
 - 作为 `@homurajs` 全家桶的落地示范：六个能力包如何在同一个 Hono 应用里协同装配。
-- 复刻「辰知教务」这类课务软件的核心交互（尤其是**周课表网格**与**考勤点名**），验证 shadcn/ui + Tailwind v3 在信息密集型后台场景的表现力。
+- 复刻「Guga 课务」这类课务软件的核心交互（尤其是**周课表网格**与**考勤点名**），验证 shadcn/ui + Tailwind v3 在信息密集型后台场景的表现力。
 
 ## 如何安装和运行？
 
@@ -49,7 +49,7 @@ npm run dev:genuine
 npm run preview
 ```
 
-打开 <http://127.0.0.1:8799>，演示账号：**admin / chenzhi@2025**。
+打开 <http://127.0.0.1:8799>，演示账号：**admin / guga@2025**。
 
 **开发形态（Vite HMR + tsx watch，前后端分离）：**
 

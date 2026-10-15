@@ -16,7 +16,7 @@ test.describe('认证与会话', () => {
     await expect(page).toHaveURL(/\/login/)
     // 登录页核心元素可见（CardTitle 渲染为 div，用 getByText）
     await expect(page.getByText('账户登录')).toBeVisible()
-    await expect(page.getByRole('heading', { name: '辰知教务' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Guga 课务' })).toBeVisible()
   })
 
   test('登录页展示授权状态（license 模块经 /_license 豁免路径）', async ({ page }) => {

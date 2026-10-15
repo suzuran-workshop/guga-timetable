@@ -4,7 +4,7 @@
 
 /*
  * shadcn/ui (Tailwind v3) 设计令牌。
- * 采用「辰知教务」风格的冷静蓝灰主色，深色模式走 slate 中性色。
+ * 采用「Guga 课务」风格的冷静蓝灰主色，深色模式走 slate 中性色。
  * 前端主题 store 通过在 <html> 挂 .dark 切换。
  */
 @layer base {

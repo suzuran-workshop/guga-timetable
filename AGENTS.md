@@ -1,6 +1,6 @@
 # AGENTS.md
 
-辰知教务（chenzhi-edu）—— 基于 `@homurajs` 六模块全家桶的教务管理系统。本文件帮助 Agent 快速定位代码结构与项目约定；产品/技术细节见 `docs/`。
+Guga 课务（guga-timetable）—— 基于 `@homurajs` 六模块全家桶的教务管理系统。本文件帮助 Agent 快速定位代码结构与项目约定；产品/技术细节见 `docs/`。
 
 ## 概述
 
@@ -13,7 +13,7 @@
 - **非目标（明确排除）**：
   - 不接第三方 OAuth2 IdP（只走 `@homurajs/auth` 的 password provider）。
   - 不做真实支付（订单金额手动录入，单位「分」）。
-  - 不做多租户 SaaS 隔离（storage ns 固定为 `chenzhi`）。
+  - 不做多租户 SaaS 隔离（storage ns 固定为 `guga`）。
   - 授权中心是**本地 mock**（`tools/genuine-mock.ts`），非生产中央服务。
 
 ## Agent 操作指南

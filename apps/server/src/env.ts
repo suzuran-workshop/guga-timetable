@@ -14,7 +14,7 @@ export const config = defineConfig({
   trustProxy: { env: 'TRUST_PROXY', default: false, parse: parses.boolean, description: '是否位于反向代理后' },
 
   // 持久层（@homurajs/db）
-  dbPath: { env: 'DB_PATH', default: 'data/chenzhi.db', parse: parses.string, description: 'sqlite 文件路径或 :memory:' },
+  dbPath: { env: 'DB_PATH', default: 'data/guga.db', parse: parses.string, description: 'sqlite 文件路径或 :memory:' },
   databaseUrl: { env: 'DATABASE_URL', default: '', parse: parses.string, description: 'postgres 连接串（留空则用 sqlite）' },
 
   // 认证（@homurajs/auth）
@@ -26,8 +26,8 @@ export const config = defineConfig({
   // 授权（@homurajs/license）
   licenseEnabled: { env: 'LICENSE_ENABLED', default: true, parse: parses.boolean, description: '是否启用授权守卫' },
   genuineServer: { env: 'GENUINE_SERVER', default: 'http://127.0.0.1:8790', parse: parses.string, description: 'genuine 授权中心地址' },
-  genuineProductId: { env: 'GENUINE_PRODUCT_ID', default: 'chenzhi-edu', parse: parses.string, description: '产品标识' },
-  genuineAppId: { env: 'GENUINE_APP_ID', default: 'chenzhi-edu-app', parse: parses.string, description: '应用标识' },
+  genuineProductId: { env: 'GENUINE_PRODUCT_ID', default: 'guga-timetable', parse: parses.string, description: '产品标识' },
+  genuineAppId: { env: 'GENUINE_APP_ID', default: 'guga-timetable-app', parse: parses.string, description: '应用标识' },
   genuineLicenseKey: { env: 'GENUINE_LICENSE_KEY', default: '', parse: parses.string, description: '许可证密钥（可空，由中心自助注册）' },
   genuinePublicKey: { env: 'GENUINE_PUBLIC_KEY', default: '', secret: true, parse: parses.string, description: '中心 Ed25519 公钥 PEM（配了才验签）' },
 
@@ -39,7 +39,7 @@ export const config = defineConfig({
 
   // 演示种子账号
   seedAdminUsername: { env: 'SEED_ADMIN_USERNAME', default: 'admin', parse: parses.string, description: '种子管理员用户名' },
-  seedAdminPassword: { env: 'SEED_ADMIN_PASSWORD', default: 'chenzhi@2025', secret: true, parse: parses.string, description: '种子管理员密码' },
+  seedAdminPassword: { env: 'SEED_ADMIN_PASSWORD', default: 'guga@2025', secret: true, parse: parses.string, description: '种子管理员密码' },
   seedAdminNickname: { env: 'SEED_ADMIN_NICKNAME', default: '教务管理员', parse: parses.string, description: '种子管理员昵称' },
 })
 

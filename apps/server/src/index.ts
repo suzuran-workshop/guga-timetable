@@ -19,7 +19,7 @@ import { fileProxyRoutes } from './api/files.js'
 import { licenseRoutes } from './api/license.js'
 
 /**
- * 辰知教务 · 服务端装配入口。
+ * Guga 课务 · 服务端装配入口。
  *
  * 六模块协作（固定中间件链由 @homurajs/app-kit 的 createApp 保证）：
  *   core      → 配置装载 / 结构化日志 / 形态探测 / 健康检查路径同源
@@ -86,7 +86,7 @@ async function main() {
   })
 
   // ---- 7. 业务路由 ----
-  const apiRoutes = createApiRoutes({ svc, profiles, storage, ns: 'chenzhi' })
+  const apiRoutes = createApiRoutes({ svc, profiles, storage, ns: 'guga' })
 
   // 根级路由：/_license（守卫豁免）+ /files 代理 + /api（登录+鉴权）
   // 注意：createFileProxyRoutes 内部已注册在 /files/:key{.+}，故挂在根（不能再加 /files 前缀）
@@ -129,7 +129,7 @@ async function main() {
 
   // ---- 10. 启动（adapter 监听端口）----
   await adapter.start(app, { port: cfg.get('port') })
-  logger.info('🚀 辰知教务已启动', { url: `http://${cfg.get('host')}:${cfg.get('port')}`, target: runtime.target })
+  logger.info('🚀 Guga 课务已启动', { url: `http://${cfg.get('host')}:${cfg.get('port')}`, target: runtime.target })
 
   // 优雅关闭
   const shutdown = () => {

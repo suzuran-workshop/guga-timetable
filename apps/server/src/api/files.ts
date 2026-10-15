@@ -11,10 +11,10 @@ import { requirePerm, currentUser } from './guards.js'
  * - GET  /api/files         按 ns 列表
  * - GET  /files/:key        代理下载（createFileProxyRoutes，storage 的统一入口）
  *
- * ns（命名空间）做租户隔离：这里用 'chenzhi' 固定 ns（单机演示），
+ * ns（命名空间）做租户隔离：这里用 'guga' 固定 ns（单机演示），
  * 真实多租户可用 userId / orgId 作 ns 前缀。
  */
-export function fileRoutes(svc: Services, storage: FileStorage, ns = 'chenzhi'): Hono {
+export function fileRoutes(svc: Services, storage: FileStorage, ns = 'guga'): Hono {
   const app = new Hono()
 
   app.post('/upload', requirePerm('file:write'), async (c) => {
