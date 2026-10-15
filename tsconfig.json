@@ -17,11 +17,11 @@
     "types": ["node", "vite/client"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/client/*"],
-      "@shared/*": ["./src/shared/*"],
-      "@server/*": ["./src/server/*"]
+      "@/*": ["./apps/web/src/*"],
+      "@guga/shared": ["./packages/shared/src"],
+      "@server/*": ["./apps/server/src/*"]
     }
   },
-  "include": ["src/client", "src/shared", "vite.config.ts"],
-  "exclude": ["src/server"]
+  "include": ["apps/web/src", "packages/shared/src", "vite.config.ts"],
+  "exclude": ["apps/server"]
 }

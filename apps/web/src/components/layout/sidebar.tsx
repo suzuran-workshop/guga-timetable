@@ -5,7 +5,7 @@ import {
 } from 'lucide-react'
 import { cn } from '../../lib/utils.js'
 import { useAppStore } from '../../store/app.js'
-import type { Permission } from '../../../shared/domain.js'
+import type { Permission } from '@guga/shared'
 import { ScrollArea } from '../ui/scroll-area.js'
 
 interface NavItem {

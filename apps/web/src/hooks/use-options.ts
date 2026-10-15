@@ -1,5 +1,5 @@
 import { useApi } from '../hooks/use-api.js'
-import type { CourseDto, TeacherDto, ClassDto } from '../../shared/domain.js'
+import type { CourseDto, TeacherDto, ClassDto } from '@guga/shared'
 
 /** 下拉选项数据（课程/教师/班级），各表单页共享，缓存于各自组件实例。 */
 export function useCourseOptions() {

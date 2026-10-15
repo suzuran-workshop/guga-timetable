@@ -23,7 +23,7 @@ import {
 import {
   orderSchema, ORDER_STATUS_LABEL, PAY_METHOD_LABEL,
   type OrderDto, type OrderStatus, type Page,
-} from '../../shared/domain.js'
+} from '@guga/shared'
 import { formatMoney } from '../lib/utils.js'
 
 const STATUS_VARIANT: Record<OrderStatus, 'default' | 'secondary' | 'outline' | 'destructive'> = {

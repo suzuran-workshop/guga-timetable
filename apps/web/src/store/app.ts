@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { api, setAuthHooks } from '../lib/api.js'
-import type { SessionUser, Permission, LicenseStateDto } from '../../shared/domain.js'
-import { can } from '../../shared/domain.js'
+import type { SessionUser, Permission, LicenseStateDto } from '@guga/shared'
+import { can } from '@guga/shared'
 
 /**
  * 全局会话状态（zustand）。

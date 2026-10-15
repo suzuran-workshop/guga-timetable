@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { scheduleSchema, type AutoScheduleRequest } from '../../shared/domain.js'
+import { scheduleSchema, type AutoScheduleRequest } from '@guga/shared'
 import type { Services } from '../repo/index.js'
 import { requirePerm, jsonBody, currentUser } from './guards.js'
 

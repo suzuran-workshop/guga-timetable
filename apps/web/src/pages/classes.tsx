@@ -17,7 +17,7 @@ import { Progress } from '../components/ui/progress.js'
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '../components/ui/select.js'
-import { classSchema, CLASS_STATUS_LABEL, type ClassDto, type ClassStatus, type Page } from '../../shared/domain.js'
+import { classSchema, CLASS_STATUS_LABEL, type ClassDto, type ClassStatus, type Page } from '@guga/shared'
 
 const STATUS_VARIANT: Record<ClassStatus, 'default' | 'secondary' | 'outline' | 'destructive'> = {
   recruiting: 'outline', ongoing: 'default', finished: 'secondary', cancelled: 'destructive',

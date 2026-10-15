@@ -1,7 +1,7 @@
 import { createMiddleware } from 'hono/factory'
 import type { Context } from 'hono'
-import type { Permission, Role, SessionUser } from '../../shared/domain.js'
-import { can, permissionsOf } from '../../shared/domain.js'
+import type { Permission, Role, SessionUser } from '@guga/shared'
+import { can, permissionsOf } from '@guga/shared'
 import type { ProfileRepo } from '../repo/profile.js'
 
 /**

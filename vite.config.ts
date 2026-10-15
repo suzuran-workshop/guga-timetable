@@ -9,15 +9,16 @@ import { fileURLToPath, URL } from 'node:url'
  * - 开发模式下走 Vite dev server + 代理到本地 API（端口见 homura.config.env.example）。
  */
 export default defineConfig({
+  root: 'apps/web',
   plugins: [react()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src/client', import.meta.url)),
-      '@shared': fileURLToPath(new URL('./src/shared', import.meta.url)),
+      '@': fileURLToPath(new URL('./apps/web/src', import.meta.url)),
+      '@guga/shared': fileURLToPath(new URL('./packages/shared/src', import.meta.url)),
     },
   },
   build: {
-    outDir: 'dist/client',
+    outDir: '../../dist/client',
     emptyOutDir: true,
     sourcemap: true,
   },

@@ -1,7 +1,7 @@
 import { and, count, desc, eq, like, or, sql } from 'drizzle-orm'
 import type { DbBundle } from '../db/index.js'
 import { Repository, normalizePage, type PageQuery } from './base.js'
-import type { GradeDto, GradeInput } from '../../shared/domain.js'
+import type { GradeDto, GradeInput } from '@guga/shared'
 
 /** 成绩仓储。 */
 export class GradeRepo extends Repository {

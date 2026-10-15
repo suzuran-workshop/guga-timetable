@@ -21,7 +21,7 @@ import {
 import {
   toISODate, parseDate, periodRange, weekdayOfDate, WEEKDAY_LABEL,
   LESSON_STATUS_LABEL, type ResolvedLesson, type LessonStatus,
-} from '../../shared/domain.js'
+} from '@guga/shared'
 import { cn } from '../lib/utils.js'
 
 const STATUS_STYLE: Record<LessonStatus, string> = {

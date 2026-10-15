@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test'
 /**
  * Playwright E2E 配置。
  *
- * webServer 会自动拉起：genuine-mock 授权中心（8790）+ 辰知教务 API（8799）。
+ * webServer 会自动拉起：genuine-mock 授权中心（8790）+ Guga 课务 API（8799）。
  * 测试直接打生产形态的 API（8799，dist/client 由 app-kit 静态托管），
  * 走真实浏览器 + 真实 cookie 会话，端到端覆盖六模块。
  *

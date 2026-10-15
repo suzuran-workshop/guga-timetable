@@ -1,0 +1,26 @@
+{
+  "name": "@guga/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@guga/shared": "*",
+    "@homurajs/app-kit": "26.10.15",
+    "@homurajs/auth": "26.10.15",
+    "@homurajs/core": "26.10.15",
+    "@homurajs/db": "26.10.15",
+    "@homurajs/license": "26.10.15",
+    "@homurajs/storage": "26.10.15",
+    "@hono/node-server": "^1.19.0",
+    "drizzle-orm": "1.0.0-rc.4",
+    "exceljs": "^4.4.0",
+    "hono": "^4.13.13",
+    "zod": "^4.1.12"
+  }
+}

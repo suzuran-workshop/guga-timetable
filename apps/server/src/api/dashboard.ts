@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import type { Services } from '../repo/index.js'
 import { requirePerm } from './guards.js'
-import { PERIODS } from '../../shared/domain.js'
+import { PERIODS } from '@guga/shared'
 
 /** 仪表盘路由：首页聚合统计 + 节次作息表（排课引用）。 */
 export function dashboardRoutes(svc: Services): Hono {

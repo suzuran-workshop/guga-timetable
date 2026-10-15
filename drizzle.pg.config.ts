@@ -5,6 +5,6 @@
  */
 export default {
   dialect: 'postgresql',
-  schema: './src/server/db/schema/pg.ts',
+  schema: './apps/server/src/db/schema/pg.ts',
   out: './drizzle/pg',
 }

@@ -1,7 +1,7 @@
 import { and, eq, inArray, lte, gte, sql } from 'drizzle-orm'
 import type { DbBundle } from '../db/index.js'
 import { Repository } from './base.js'
-import type { ScheduleDto, ScheduleInput } from '../../shared/domain.js'
+import type { ScheduleDto, ScheduleInput } from '@guga/shared'
 
 /**
  * 排课仓储 + 冲突检测。

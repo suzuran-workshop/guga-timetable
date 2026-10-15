@@ -1,5 +1,5 @@
 import { toast } from 'sonner'
-import type { ApiError } from '../../shared/domain.js'
+import type { ApiError } from '@guga/shared'
 
 /**
  * 前端 API 客户端。

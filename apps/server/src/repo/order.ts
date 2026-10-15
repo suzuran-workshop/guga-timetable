@@ -1,7 +1,7 @@
 import { and, count, desc, eq, like, or, sql } from 'drizzle-orm'
 import type { DbBundle } from '../db/index.js'
 import { Repository, genOrderNo, normalizePage, type PageQuery } from './base.js'
-import type { OrderDto, OrderInput, OrderStatus, PayMethod } from '../../shared/domain.js'
+import type { OrderDto, OrderInput, OrderStatus, PayMethod } from '@guga/shared'
 
 /**
  * 订单仓储 + 课时充值业务。

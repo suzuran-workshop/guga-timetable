@@ -2,8 +2,8 @@ import { count, eq } from 'drizzle-orm'
 import type { DbBundle } from '../db/index.js'
 import { tables } from '../db/tables.js'
 import type { Services } from '../repo/index.js'
-import { STUDENT_STATUS_LABEL } from '../../shared/domain.js'
-import type { DashboardStats } from '../../shared/domain.js'
+import { STUDENT_STATUS_LABEL } from '@guga/shared'
+import type { DashboardStats } from '@guga/shared'
 
 /** 仪表盘聚合服务：一次性算出首页卡片 + 图表所需的全部统计。 */
 export class DashboardService {

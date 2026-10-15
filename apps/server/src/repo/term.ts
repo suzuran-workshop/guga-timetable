@@ -4,7 +4,7 @@ import { Repository } from './base.js'
 import {
   startOfWeekMonday, weekOfDate, weekdayOfDate, toISODate, parseDate,
   type TermDto, type TermInput,
-} from '../../shared/domain.js'
+} from '@guga/shared'
 
 /**
  * 学期仓储：日期 ↔ 教学周 的解析地基。

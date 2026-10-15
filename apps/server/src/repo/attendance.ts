@@ -1,8 +1,8 @@
 import { and, count, desc, eq, gte, inArray, lte, sql } from 'drizzle-orm'
 import type { DbBundle } from '../db/index.js'
 import { Repository, normalizePage, type PageQuery } from './base.js'
-import { ATTENDANCE_STATUS_LABEL, LESSON_CONSUMING } from '../../shared/domain.js'
-import type { AttendanceDto, AttendanceInput, AttendanceStatus } from '../../shared/domain.js'
+import { ATTENDANCE_STATUS_LABEL, LESSON_CONSUMING } from '@guga/shared'
+import type { AttendanceDto, AttendanceInput, AttendanceStatus } from '@guga/shared'
 
 /**
  * 考勤仓储。核心业务：标记考勤时，若状态计入课时消耗（出勤/迟到/补课），

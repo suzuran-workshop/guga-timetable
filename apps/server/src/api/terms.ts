@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { termSchema, toISODate } from '../../shared/domain.js'
+import { termSchema, toISODate } from '@guga/shared'
 import type { Services } from '../repo/index.js'
 import { requirePerm, jsonBody } from './guards.js'
 

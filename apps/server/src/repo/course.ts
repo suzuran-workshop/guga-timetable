@@ -1,7 +1,7 @@
 import { and, count, desc, eq, inArray, like, or, sql } from 'drizzle-orm'
 import type { DbBundle } from '../db/index.js'
 import { Repository, normalizePage, type PageQuery } from './base.js'
-import type { CourseDto, CourseInput, CourseStatus } from '../../shared/domain.js'
+import type { CourseDto, CourseInput, CourseStatus } from '@guga/shared'
 
 /** 课程仓储。附带班级数与在读学员数聚合。 */
 export class CourseRepo extends Repository {

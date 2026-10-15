@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { swapLessonsSchema, toISODate } from '../../shared/domain.js'
+import { swapLessonsSchema, toISODate } from '@guga/shared'
 import type { Services } from '../repo/index.js'
 import { requirePerm, jsonBody, currentUser } from './guards.js'
 

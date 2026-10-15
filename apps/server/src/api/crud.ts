@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { requirePerm, jsonBody } from './guards.js'
-import type { Permission } from '../../shared/domain.js'
+import type { Permission } from '@guga/shared'
 
 /**
  * 通用 CRUD 路由工厂。

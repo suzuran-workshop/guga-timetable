@@ -6,7 +6,7 @@ import {
   type AutoScheduleResult,
   type ScheduleInput,
   type ScheduleSlot,
-} from '../../shared/domain.js'
+} from '@guga/shared'
 
 /**
  * 自动派课（贪心 + 回溯）。
@@ -25,7 +25,7 @@ import {
  *   「占位」用内存中的虚拟排课集合参与冲突检测，避免每次都查库；最终成功的一批才真正落库。
  */
 
-/** 候选时段（连续节次窗口）。契约定义在 shared/domain.ts，此处仅取本地别名。 */
+/** 候选时段（连续节次窗口）。契约定义在 @guga/shared，此处仅取本地别名。 */
 type Slot = ScheduleSlot
 
 /** 一个待排任务 */

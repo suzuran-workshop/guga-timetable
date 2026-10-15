@@ -11,7 +11,7 @@ import { TeacherDialog } from '../components/dialogs/teacher-dialog.js'
 import { Button } from '../components/ui/button.js'
 import { Input } from '../components/ui/input.js'
 import { Badge } from '../components/ui/badge.js'
-import { TEACHER_STATUS_LABEL, type TeacherDto, type Page } from '../../shared/domain.js'
+import { TEACHER_STATUS_LABEL, type TeacherDto, type Page } from '@guga/shared'
 
 /** 教师管理：搜索 + 表格 + 新建/编辑/删除。 */
 export function TeachersPage() {

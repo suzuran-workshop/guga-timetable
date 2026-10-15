@@ -20,7 +20,7 @@ import {
   STUDENT_STATUS_LABEL, GENDER_LABEL, ATTENDANCE_STATUS_LABEL,
   ORDER_STATUS_LABEL, type StudentDto, type ClassDto, type AttendanceDto,
   type GradeDto, type OrderDto,
-} from '../../shared/domain.js'
+} from '@guga/shared'
 
 interface ProfileResp {
   student: StudentDto

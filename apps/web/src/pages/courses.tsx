@@ -11,7 +11,7 @@ import { FormDialog, type FieldSpec } from '../components/form-dialog.js'
 import { Button } from '../components/ui/button.js'
 import { Input } from '../components/ui/input.js'
 import { Badge } from '../components/ui/badge.js'
-import { courseSchema, COURSE_STATUS_LABEL, type CourseDto, type Page } from '../../shared/domain.js'
+import { courseSchema, COURSE_STATUS_LABEL, type CourseDto, type Page } from '@guga/shared'
 import { formatMoney } from '../lib/utils.js'
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4', '#eab308', '#6366f1']

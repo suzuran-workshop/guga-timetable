@@ -14,7 +14,7 @@ import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs.js'
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '../components/ui/select.js'
-import { scheduleSchema, PERIODS, WEEKDAY_LABEL, type ScheduleDto } from '../../shared/domain.js'
+import { scheduleSchema, PERIODS, WEEKDAY_LABEL, type ScheduleDto } from '@guga/shared'
 
 type Dim = 'global' | 'teacher' | 'class'
 

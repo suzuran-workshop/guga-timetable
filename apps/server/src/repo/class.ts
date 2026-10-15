@@ -1,7 +1,7 @@
 import { and, count, desc, eq, inArray, like, or, sql } from 'drizzle-orm'
 import type { DbBundle } from '../db/index.js'
 import { Repository, normalizePage, type PageQuery } from './base.js'
-import type { ClassDto, ClassInput, ClassStatus, ScheduleDto } from '../../shared/domain.js'
+import type { ClassDto, ClassInput, ClassStatus, ScheduleDto } from '@guga/shared'
 
 /** 班级仓储：聚合课程、教师、排课、在读人数与成员。 */
 export class ClassRepo extends Repository {

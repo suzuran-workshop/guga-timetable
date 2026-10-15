@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import type { LicenseClient } from '@homurajs/license'
-import type { LicenseStateDto } from '../../shared/domain.js'
+import type { LicenseStateDto } from '@guga/shared'
 
 /**
  * 授权状态路由（前端横幅展示用）。

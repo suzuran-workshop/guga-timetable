@@ -9,7 +9,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '../ui/dropdown-menu.js'
-import { ROLE_LABEL } from '../../../shared/domain.js'
+import { ROLE_LABEL } from '@guga/shared'
 
 /** 顶栏：移动端菜单按钮 + 主题切换 + 用户菜单（角色徽标 / 登出）。 */
 export function Topbar({ onMenu }: { onMenu: () => void }) {

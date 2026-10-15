@@ -7,7 +7,7 @@ import {
   weekOfDate, weekdayOfDate, toISODate, dateOfWeekday,
   type ExceptionAction, type LessonStatus, type ResolvedLesson,
   type ScheduleExceptionDto, type ScheduleExceptionInput, type SwapLessonsInput,
-} from '../../shared/domain.js'
+} from '@guga/shared'
 
 /**
  * 排课例外（调换课）仓储 + 单日课表解析。

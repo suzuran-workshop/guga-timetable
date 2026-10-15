@@ -3,7 +3,7 @@ import type { DbBundle } from '../db/index.js'
 import { Repository, normalizePage, type PageQuery } from './base.js'
 import type {
   StudentDto, StudentInput, StudentStatus, ClassDto, ScheduleDto,
-} from '../../shared/domain.js'
+} from '@guga/shared'
 
 /** 学员仓储 + 课时余额管理。 */
 export class StudentRepo extends Repository {

@@ -17,7 +17,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '../components/ui/select.js'
 import { formatDateTime, formatDate } from '../lib/utils.js'
-import { ROLE_LABEL, Role, termSchema, type LicenseStateDto, type TermDto } from '../../shared/domain.js'
+import { ROLE_LABEL, Role, termSchema, type LicenseStateDto, type TermDto } from '@guga/shared'
 
 /** /api/users 列表行 */
 interface UserRow {

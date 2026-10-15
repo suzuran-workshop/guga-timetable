@@ -1,5 +1,5 @@
 import { useApi } from './use-api.js'
-import type { TermDto } from '../../shared/domain.js'
+import type { TermDto } from '@guga/shared'
 
 export interface TermContext {
   term: TermDto | null

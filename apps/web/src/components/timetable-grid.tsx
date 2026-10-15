@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { ScrollArea } from './ui/scroll-area.js'
-import { PERIODS, WEEKDAY_LABEL, periodRange, type ScheduleDto } from '../../shared/domain.js'
+import { PERIODS, WEEKDAY_LABEL, periodRange, type ScheduleDto } from '@guga/shared'
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4', '#eab308', '#6366f1']
 

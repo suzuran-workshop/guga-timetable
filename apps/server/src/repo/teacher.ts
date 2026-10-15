@@ -1,7 +1,7 @@
 import { and, count, desc, eq, like, or, sql } from 'drizzle-orm'
 import type { DbBundle } from '../db/index.js'
 import { Repository, normalizePage, type PageQuery } from './base.js'
-import type { TeacherDto, TeacherInput, TeacherStatus } from '../../shared/domain.js'
+import type { TeacherDto, TeacherInput, TeacherStatus } from '@guga/shared'
 
 /** 教师仓储。subjects 以 JSON 列存储（pg jsonb / sqlite text-json，drizzle 透明序列化）。 */
 export class TeacherRepo extends Repository {

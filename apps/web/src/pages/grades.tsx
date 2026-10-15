@@ -14,7 +14,7 @@ import { Input } from '../components/ui/input.js'
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '../components/ui/select.js'
-import { gradeSchema, type GradeDto, type Page } from '../../shared/domain.js'
+import { gradeSchema, type GradeDto, type Page } from '@guga/shared'
 
 /** 按得分率给成绩着色：绿 >=85%，琥珀 >=60%，红 <60%。 */
 function scoreColor(score: number, full: number): string {

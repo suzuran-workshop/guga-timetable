@@ -16,10 +16,10 @@ import { Checkbox } from '../components/ui/checkbox.js'
 import { Badge } from '../components/ui/badge.js'
 import { Separator } from '../components/ui/separator.js'
 import { Skeleton } from '../components/ui/skeleton.js'
-import { WEEKDAY_LABEL, periodRange, type AutoScheduleResult } from '../../shared/domain.js'
+import { WEEKDAY_LABEL, periodRange, type AutoScheduleResult } from '@guga/shared'
 import { cn } from '../lib/utils.js'
 
-/** POST /api/schedules/auto 的响应体，契约单一源在 shared/domain.ts。 */
+/** POST /api/schedules/auto 的响应体，契约单一源在 @guga/shared。 */
 type AutoResult = AutoScheduleResult
 
 const WEEKDAYS = [1, 2, 3, 4, 5, 6, 7]

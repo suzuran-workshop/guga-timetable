@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm'
 import type { Services } from '../repo/index.js'
 import type { ProfileRepo } from '../repo/profile.js'
 import { requireLogin, requireAdmin, currentUser, jsonBody } from './guards.js'
-import { Role, ROLE_LABEL, permissionsOf, type Permission } from '../../shared/domain.js'
+import { Role, ROLE_LABEL, permissionsOf, type Permission } from '@guga/shared'
 
 /**
  * 用户/档案路由：

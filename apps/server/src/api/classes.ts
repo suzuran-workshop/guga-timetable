@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { classSchema } from '../../shared/domain.js'
+import { classSchema } from '@guga/shared'
 import type { Services } from '../repo/index.js'
 import { createCrudRoutes, baseQuery } from './crud.js'
 import { requirePerm, jsonBody } from './guards.js'

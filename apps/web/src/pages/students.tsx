@@ -18,7 +18,7 @@ import {
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu.js'
-import { STUDENT_STATUS_LABEL, type StudentDto, type StudentStatus, type Page } from '../../shared/domain.js'
+import { STUDENT_STATUS_LABEL, type StudentDto, type StudentStatus, type Page } from '@guga/shared'
 
 const STATUS_VARIANT: Record<StudentStatus, 'default' | 'secondary' | 'destructive' | 'outline'> = {
   active: 'default',

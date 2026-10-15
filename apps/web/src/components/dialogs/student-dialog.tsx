@@ -16,7 +16,7 @@ import {
 import {
   GENDER_LABEL, STUDENT_STATUS_LABEL,
   type StudentDto, type Gender, type StudentStatus,
-} from '../../../shared/domain.js'
+} from '@guga/shared'
 
 interface FormValues {
   name: string

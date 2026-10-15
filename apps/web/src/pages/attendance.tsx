@@ -16,7 +16,7 @@ import {
 import {
   ATTENDANCE_STATUS_LABEL, AttendanceStatus, LESSON_CONSUMING,
   periodRange, type ScheduleDto,
-} from '../../shared/domain.js'
+} from '@guga/shared'
 import { cn, today } from '../lib/utils.js'
 
 interface RosterItem {

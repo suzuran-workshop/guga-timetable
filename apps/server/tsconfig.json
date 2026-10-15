@@ -1,24 +1,24 @@
 {
   "compilerOptions": {
-    "target": "ES2023",
-    "lib": ["ES2023"],
+    "target": "ES2022",
+    "lib": ["ES2022"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "declaration": false,
+    "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
     "outDir": "dist",
     "rootDir": "src",
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "@shared/*": ["./src/shared/*"],
-      "@server/*": ["./src/server/*"]
+      "@guga/shared": ["../../packages/shared/src"]
     }
   },
-  "include": ["src/server", "src/shared"],
-  "exclude": ["node_modules"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

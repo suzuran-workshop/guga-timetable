@@ -1,8 +1,8 @@
 import { eq } from 'drizzle-orm'
 import type { DbBundle } from '../db/index.js'
 import { Repository } from '../repo/base.js'
-import type { Permission, Role, SessionUser } from '../../shared/domain.js'
-import { permissionsOf } from '../../shared/domain.js'
+import type { Permission, Role, SessionUser } from '@guga/shared'
+import { permissionsOf } from '@guga/shared'
 
 /**
  * 用户档案仓储：把 @homurajs/auth 的 session claims（sub=userId）

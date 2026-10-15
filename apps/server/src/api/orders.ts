@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { orderSchema, OrderStatus } from '../../shared/domain.js'
+import { orderSchema, OrderStatus } from '@guga/shared'
 import type { Services } from '../repo/index.js'
 import { requirePerm, jsonBody, currentUser, requireAdmin } from './guards.js'
 import { baseQuery } from './crud.js'

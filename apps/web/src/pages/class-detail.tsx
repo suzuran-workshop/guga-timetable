@@ -23,7 +23,7 @@ import { Input } from '../components/ui/input.js'
 import {
   CLASS_STATUS_LABEL, scheduleSchema, PERIODS, WEEKDAY_LABEL, periodRange,
   type ClassDto, type ScheduleDto,
-} from '../../shared/domain.js'
+} from '@guga/shared'
 
 interface Member {
   id: string; name: string; studentNo: string; phone: string | null

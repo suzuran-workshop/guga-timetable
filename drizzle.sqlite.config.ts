@@ -8,6 +8,6 @@
  */
 export default {
   dialect: 'sqlite',
-  schema: './src/server/db/schema/sqlite.ts',
+  schema: './apps/server/src/db/schema/sqlite.ts',
   out: './drizzle/sqlite',
 }

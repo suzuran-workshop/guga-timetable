@@ -1,5 +1,5 @@
-import { teacherSchema } from '../../../shared/domain.js'
-import { GENDER_LABEL, TEACHER_STATUS_LABEL, type TeacherDto, type Gender, type TeacherStatus } from '../../../shared/domain.js'
+import { teacherSchema } from '@guga/shared'
+import { GENDER_LABEL, TEACHER_STATUS_LABEL, type TeacherDto, type Gender, type TeacherStatus } from '@guga/shared'
 import { FormDialog, type FieldSpec } from '../form-dialog.js'
 
 const FIELDS: FieldSpec[] = [

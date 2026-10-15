@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { attendanceSchema, AttendanceStatus, LESSON_CONSUMING } from '../../shared/domain.js'
+import { attendanceSchema, AttendanceStatus, LESSON_CONSUMING } from '@guga/shared'
 import type { Services } from '../repo/index.js'
 import { requirePerm, jsonBody, currentUser } from './guards.js'
 import { baseQuery } from './crud.js'
